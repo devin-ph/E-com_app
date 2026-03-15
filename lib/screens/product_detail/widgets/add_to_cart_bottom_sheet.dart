@@ -5,12 +5,27 @@ import '../../../providers/cart_provider.dart';
 import '../../../utils/formatters.dart';
 
 const List<String> _sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+const List<String> _electronicsSizes = ['128Gb', '256Gb', '512Gb', '1Tb'];
+const List<String> _jewelrySizes = [
+  'Size 13',
+  'Size 14',
+  'Size 15',
+  'Size 16',
+  'Size 17',
+  'Size 18',
+  'Size 19',
+  'Size 20',
+];
 const List<Map<String, dynamic>> _colors = [
   {'label': 'Đen', 'value': 'black', 'color': Colors.black},
   {'label': 'Trắng', 'value': 'white', 'color': Colors.white},
   {'label': 'Đỏ', 'value': 'red', 'color': Colors.red},
   {'label': 'Xanh', 'value': 'blue', 'color': Colors.blue},
   {'label': 'Vàng', 'value': 'yellow', 'color': Colors.amber},
+];
+const List<Map<String, dynamic>> _jewelryColors = [
+  {'label': 'Bạc', 'value': 'silver', 'color': Color(0xFFC0C0C0)},
+  {'label': 'Vàng', 'value': 'gold', 'color': Color(0xFFFFC107)},
 ];
 
 class AddToCartBottomSheet extends StatefulWidget {
@@ -24,31 +39,79 @@ class AddToCartBottomSheet extends StatefulWidget {
   });
 
   static Future<void> show(
-      BuildContext context, Product product, {bool buyNow = false}) {
+    BuildContext context,
+    Product product, {
+    bool buyNow = false,
+  }) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => AddToCartBottomSheet(
-        product: product,
-        buyNow: buyNow,
-      ),
+      builder: (_) => AddToCartBottomSheet(product: product, buyNow: buyNow),
     );
   }
 
   @override
-  State<AddToCartBottomSheet> createState() =>
-      _AddToCartBottomSheetState();
+  State<AddToCartBottomSheet> createState() => _AddToCartBottomSheetState();
 }
 
 class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
-  String _selectedSize = 'M';
-  String _selectedColor = 'black';
+  late String _selectedSize;
+  late String _selectedColor;
   int _quantity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedSize = _availableSizes.first;
+    _selectedColor = (_availableColors.first['value'] as String);
+  }
+
+  bool get _isJewelryProduct {
+    return widget.product.category.toLowerCase().trim() == 'jewelery';
+  }
+
+  bool get _isElectronicsProduct {
+    return widget.product.category.toLowerCase().trim() == 'electronics';
+  }
+
+  List<String> get _availableSizes {
+    if (_isJewelryProduct) return _jewelrySizes;
+    if (_isElectronicsProduct) return _electronicsSizes;
+    return _sizes;
+  }
+
+  List<Map<String, dynamic>> get _availableColors {
+    return _isJewelryProduct ? _jewelryColors : _colors;
+  }
+
+  bool get _showsColorSelector => !_isElectronicsProduct;
+
+  double get _selectedPrice {
+    if (!_isElectronicsProduct) return widget.product.price;
+    final index = _electronicsSizes.indexOf(_selectedSize);
+    final adjustedIndex = index < 0 ? 0 : index;
+    return widget.product.price + (adjustedIndex * 20);
+  }
+
+  Product get _selectedVariantProduct {
+    if (!_isElectronicsProduct) return widget.product;
+    return Product(
+      id: widget.product.id,
+      title: widget.product.title,
+      price: _selectedPrice,
+      description: widget.product.description,
+      category: widget.product.category,
+      image: widget.product.image,
+      rating: widget.product.rating,
+      ratingCount: widget.product.ratingCount,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final product = widget.product;
+    final displayPrice = _selectedPrice;
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -90,7 +153,7 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) =>
+                      errorBuilder: (_, _, _) =>
                           Container(width: 80, height: 80, color: Colors.grey),
                     ),
                   ),
@@ -108,7 +171,7 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        Formatters.currency(product.price),
+                        Formatters.currency(displayPrice),
                         style: const TextStyle(
                           color: Color(0xFFEE4D2D),
                           fontSize: 18,
@@ -122,19 +185,24 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
             ),
             const SizedBox(height: 20),
             // Size selector
-            const Text('Chọn Kích cỡ',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              _isElectronicsProduct ? 'Chọn dung lượng' : 'Chọn Kích cỡ',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
-              children: _sizes.map((size) {
+              runSpacing: 8,
+              children: _availableSizes.map((size) {
                 final selected = size == _selectedSize;
                 return GestureDetector(
                   onTap: () => setState(() => _selectedSize = size),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 150),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: selected
                           ? const Color(0xFFEE4D2D)
@@ -159,57 +227,67 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                 );
               }).toList(),
             ),
-            const SizedBox(height: 16),
-            // Color selector
-            const Text('Chọn Màu sắc',
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: _colors.map((c) {
-                final selected = c['value'] == _selectedColor;
-                return GestureDetector(
-                  onTap: () =>
-                      setState(() => _selectedColor = c['value'] as String),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: selected
-                            ? const Color(0xFFEE4D2D)
-                            : Colors.grey.shade400,
-                        width: selected ? 2 : 1,
+            if (_showsColorSelector) ...[
+              const SizedBox(height: 16),
+              // Color selector
+              const Text(
+                'Chọn Màu sắc',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _availableColors.map((c) {
+                  final selected = c['value'] == _selectedColor;
+                  return GestureDetector(
+                    onTap: () =>
+                        setState(() => _selectedColor = c['value'] as String),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
                       ),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 14,
-                          height: 14,
-                          decoration: BoxDecoration(
-                            color: c['color'] as Color,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: selected
+                              ? const Color(0xFFEE4D2D)
+                              : Colors.grey.shade400,
+                          width: selected ? 2 : 1,
                         ),
-                        const SizedBox(width: 6),
-                        Text(c['label'] as String),
-                      ],
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 14,
+                            height: 14,
+                            decoration: BoxDecoration(
+                              color: c['color'] as Color,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(c['label'] as String),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 16),
+            ] else
+              const SizedBox(height: 16),
             // Quantity selector
             Row(
               children: [
-                const Text('Số lượng',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                const Text(
+                  'Số lượng',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 const Spacer(),
                 _QuantityButton(
                   icon: Icons.remove,
@@ -222,7 +300,9 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                   child: Text(
                     '$_quantity',
                     style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 _QuantityButton(
@@ -241,14 +321,16 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFEE4D2D),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 child: Text(
                   widget.buyNow ? 'Mua ngay' : 'Thêm vào giỏ hàng',
                   style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
@@ -260,11 +342,11 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
 
   void _confirm() {
     context.read<CartProvider>().addItem(
-          product: widget.product,
-          size: _selectedSize,
-          color: _selectedColor,
-          quantity: _quantity,
-        );
+      product: _selectedVariantProduct,
+      size: _selectedSize,
+      color: _showsColorSelector ? _selectedColor : 'khong-mau',
+      quantity: _quantity,
+    );
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -294,9 +376,8 @@ class _QuantityButton extends StatelessWidget {
         height: 32,
         decoration: BoxDecoration(
           border: Border.all(
-              color: onTap != null
-                  ? Colors.grey.shade400
-                  : Colors.grey.shade200),
+            color: onTap != null ? Colors.grey.shade400 : Colors.grey.shade200,
+          ),
           borderRadius: BorderRadius.circular(6),
         ),
         child: Icon(

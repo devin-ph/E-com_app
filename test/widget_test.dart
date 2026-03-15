@@ -1,30 +1,89 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
-import 'package:e_com_app/main.dart';
+import 'package:e_com_app/models/product.dart';
+import 'package:e_com_app/providers/cart_provider.dart';
+import 'package:e_com_app/providers/product_provider.dart';
+import 'package:e_com_app/screens/home/home_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Home screen renders key shopping sections', (
+    WidgetTester tester,
+  ) async {
+    final productProvider = _TestProductProvider();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<CartProvider>(create: (_) => CartProvider()),
+          ChangeNotifierProvider<ProductProvider>.value(value: productProvider),
+        ],
+        child: const MaterialApp(home: HomeScreen()),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    expect(find.text('TH4 - Nhóm 1'), findsOneWidget);
+    expect(find.text('Danh mục sản phẩm'), findsOneWidget);
+    expect(find.textContaining('Tìm kiếm sản phẩm'), findsOneWidget);
+    expect(find.byIcon(Icons.shopping_cart_outlined), findsOneWidget);
+
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -600));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Gợi ý hôm nay'), findsOneWidget);
   });
+}
+
+class _TestProductProvider extends ProductProvider {
+  final List<Product> _items = const [
+    Product(
+      id: 1,
+      title: 'Áo thun basic form rộng',
+      price: 15.0,
+      description: 'Sản phẩm kiểm thử',
+      category: "men's clothing",
+      image: 'https://example.com/product-1.png',
+      rating: 4.8,
+      ratingCount: 1200,
+    ),
+    Product(
+      id: 2,
+      title: 'Tai nghe bluetooth chống ồn',
+      price: 32.5,
+      description: 'Sản phẩm kiểm thử',
+      category: 'electronics',
+      image: 'https://example.com/product-2.png',
+      rating: 4.6,
+      ratingCount: 850,
+    ),
+  ];
+
+  String _selectedCategory = '';
+
+  @override
+  List<Product> get products => _items;
+
+  @override
+  bool get isLoading => false;
+
+  @override
+  bool get hasMore => false;
+
+  @override
+  String? get error => null;
+
+  @override
+  String get selectedCategory => _selectedCategory;
+
+  @override
+  Future<void> loadProducts({bool refresh = false}) async {}
+
+  @override
+  void setCategory(String category) {
+    _selectedCategory = category;
+    notifyListeners();
+  }
 }
