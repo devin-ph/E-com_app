@@ -14,18 +14,20 @@ class CategoryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     const double itemsPerRow = 4;
     const double horizontalPadding = 24;
     const double spacing = 12;
-    
-    final double itemWidth = (screenWidth - horizontalPadding - (spacing * (itemsPerRow - 1))) / itemsPerRow;
-    
-    const double gridHeight = 180;
+
+    final double itemWidth =
+        (screenWidth - horizontalPadding - (spacing * (itemsPerRow - 1))) /
+        itemsPerRow;
+
+    const double gridHeight = 200;
     const double verticalPadding = 8;
-    
+
     const double itemHeight = (gridHeight - verticalPadding - spacing) / 2;
-    
+
     final double responsiveAspectRatio = itemHeight / itemWidth;
 
     return SizedBox(
