@@ -73,8 +73,10 @@ class _HomeScreenState extends State<HomeScreen> {
               actions: [
                 const CartIconButton(),
                 IconButton(
-                  icon: const Icon(Icons.notifications_outlined,
-                      color: Colors.white),
+                  icon: const Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.white,
+                  ),
                   onPressed: () {},
                 ),
               ],
@@ -83,38 +85,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 background: Container(
                   color: _primaryColor,
                   alignment: Alignment.bottomCenter,
-                  padding:
-                      const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                   child: const SizedBox.shrink(),
                 ),
               ),
               bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(48),
+                preferredSize: const Size.fromHeight(56),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   color: _searchBarCollapsed
                       ? _primaryColor
                       : Colors.transparent,
-                  padding:
-                      const EdgeInsets.fromLTRB(12, 4, 12, 8),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Tìm kiếm sản phẩm...',
-                      prefixIcon: const Icon(Icons.search,
-                          color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide.none,
+                  padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
+                  child: SizedBox(
+                    height: 44,
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Tìm kiếm sản phẩm...',
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: Colors.grey,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
+                      onSubmitted: (value) {
+                        // Search filtering is a bonus feature
+                      },
                     ),
-                    onSubmitted: (value) {
-                      // Search filtering is a bonus feature
-                    },
                   ),
                 ),
               ),
@@ -136,12 +140,10 @@ class _HomeScreenState extends State<HomeScreen> {
               // Section title: Categories
               const SliverToBoxAdapter(
                 child: Padding(
-                  padding:
-                      EdgeInsets.fromLTRB(12, 16, 12, 8),
+                  padding: EdgeInsets.fromLTRB(12, 16, 12, 8),
                   child: Text(
                     'Danh mục sản phẩm',
-                    style: TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -150,26 +152,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Consumer<ProductProvider>(
                   builder: (context, provider, _) => CategoryRow(
                     selectedCategory: provider.selectedCategory,
-                    onCategorySelected: (cat) =>
-                        provider.setCategory(cat),
+                    onCategorySelected: (cat) => provider.setCategory(cat),
                   ),
                 ),
               ),
               // Section title: Daily Discover
               const SliverToBoxAdapter(
                 child: Padding(
-                  padding:
-                      EdgeInsets.fromLTRB(12, 16, 12, 10),
+                  padding: EdgeInsets.fromLTRB(12, 16, 12, 10),
                   child: Row(
                     children: [
-                      Icon(Icons.local_fire_department,
-                          color: Color(0xFFEE4D2D)),
+                      Icon(
+                        Icons.local_fire_department,
+                        color: Color(0xFFEE4D2D),
+                      ),
                       SizedBox(width: 6),
                       Text(
                         'Gợi ý hôm nay',
                         style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),

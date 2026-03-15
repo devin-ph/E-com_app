@@ -3,21 +3,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../models/product.dart';
 import '../utils/formatters.dart';
+import '../utils/product_navigation_cache.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
   final VoidCallback onTap;
 
-  const ProductCard({
-    super.key,
-    required this.product,
-    required this.onTap,
-  });
+  const ProductCard({super.key, required this.product, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        ProductNavigationCache.lastSelectedProduct = product;
+        onTap();
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -36,7 +36,9 @@ class ProductCard extends StatelessWidget {
             // Product image with Hero animation
             Expanded(
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(8),
+                ),
                 child: Stack(
                   children: [
                     Hero(
@@ -50,9 +52,11 @@ class ProductCard extends StatelessWidget {
                           highlightColor: Colors.grey.shade100,
                           child: Container(color: Colors.white),
                         ),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.broken_image_outlined,
-                                size: 48, color: Colors.grey),
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.broken_image_outlined,
+                          size: 48,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                     // Discount tag
@@ -61,7 +65,9 @@ class ProductCard extends StatelessWidget {
                       left: 6,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 2),
+                          horizontal: 5,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFFEE4D2D),
                           borderRadius: BorderRadius.circular(3),
@@ -82,7 +88,9 @@ class ProductCard extends StatelessWidget {
                       right: 6,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 4, vertical: 2),
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.orange.shade700,
                           borderRadius: BorderRadius.circular(3),
@@ -90,9 +98,10 @@ class ProductCard extends StatelessWidget {
                         child: const Text(
                           'Mall',
                           style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -110,10 +119,7 @@ class ProductCard extends StatelessWidget {
                     product.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      height: 1.3,
-                    ),
+                    style: const TextStyle(fontSize: 12, height: 1.3),
                   ),
                   const SizedBox(height: 4),
                   // Price row
@@ -148,13 +154,17 @@ class ProductCard extends StatelessWidget {
                       Text(
                         product.rating.toStringAsFixed(1),
                         style: const TextStyle(
-                            fontSize: 10, color: Colors.grey),
+                          fontSize: 10,
+                          color: Colors.grey,
+                        ),
                       ),
                       const Spacer(),
                       Text(
                         product.soldDisplay,
                         style: const TextStyle(
-                            fontSize: 10, color: Colors.grey),
+                          fontSize: 10,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
