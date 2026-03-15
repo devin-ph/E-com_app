@@ -5,13 +5,10 @@ import '../services/storage_service.dart';
 
 class CartProvider extends ChangeNotifier {
   final List<CartItem> _items = [];
-  bool _selectAll = false;
 
   List<CartItem> get items => List.unmodifiable(_items);
 
   int get itemCount => _items.length;
-
-  bool get selectAll => _selectAll;
 
   // Only checked items
   List<CartItem> get checkedItems =>
@@ -45,14 +42,12 @@ class CartProvider extends ChangeNotifier {
         quantity: quantity,
       ));
     }
-    _syncSelectAll();
     _saveToStorage();
     notifyListeners();
   }
 
   void removeItem(String key) {
     _items.removeWhere((item) => item.key == key);
-    _syncSelectAll();
     _saveToStorage();
     notifyListeners();
   }
@@ -75,7 +70,7 @@ class CartProvider extends ChangeNotifier {
     final index = _items.indexWhere((item) => item.key == key);
     if (index < 0) return;
     _items[index].isChecked = value;
-    _syncSelectAll();
+    _saveToStorage();
     notifyListeners();
   }
 
@@ -83,25 +78,19 @@ class CartProvider extends ChangeNotifier {
     for (final item in _items) {
       item.isChecked = value;
     }
-    _selectAll = value;
+    _saveToStorage();
     notifyListeners();
-  }
-
-  void _syncSelectAll() {
-    _selectAll = _items.isNotEmpty && _items.every((item) => item.isChecked);
   }
 
   /// Remove all checked items (after successful checkout)
   void removeCheckedItems() {
     _items.removeWhere((item) => item.isChecked);
-    _syncSelectAll();
     _saveToStorage();
     notifyListeners();
   }
 
   void clearCart() {
     _items.clear();
-    _selectAll = false;
     _saveToStorage();
     notifyListeners();
   }

@@ -1,13 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-const List<String> _bannerUrls = [
-  'https://img.freepik.com/free-vector/flat-sale-banner-template_23-2149023625.jpg',
-  'https://img.freepik.com/free-vector/flat-super-sale-banner_23-2149149817.jpg',
-  'https://img.freepik.com/free-vector/online-shopping-banner-template_23-2149123610.jpg',
-  'https://img.freepik.com/free-vector/gradient-sale-background-discount_23-2149123590.jpg',
+const List<_BannerData> _banners = [
+  _BannerData(
+    imageUrl:
+        'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1200&q=80',
+    title: 'Flash Sale 0H',
+    subtitle: 'Deal thời trang giảm tới 50%',
+  ),
+  _BannerData(
+    imageUrl:
+        'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80',
+    title: 'Công Nghệ Hot',
+    subtitle: 'Điện thoại, tai nghe freeship toàn quốc',
+  ),
+  _BannerData(
+    imageUrl:
+        'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1200&q=80',
+    title: 'Mall Voucher',
+    subtitle: 'Săn mã hoàn xu cho đơn hàng hôm nay',
+  ),
+  _BannerData(
+    imageUrl:
+        'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80',
+    title: 'Daily Discover',
+    subtitle: 'Khám phá sản phẩm nổi bật mỗi ngày',
+  ),
 ];
+
+class _BannerData {
+  final String imageUrl;
+  final String title;
+  final String subtitle;
+
+  const _BannerData({
+    required this.imageUrl,
+    required this.title,
+    required this.subtitle,
+  });
+}
 
 class BannerCarousel extends StatefulWidget {
   const BannerCarousel({super.key});
@@ -21,58 +54,131 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    if (_banners.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       children: [
-        CarouselSlider(
+        CarouselSlider.builder(
+          itemCount: _banners.length,
           options: CarouselOptions(
-            height: 160,
+            height: 176,
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 3),
-            enlargeCenterPage: true,
-            viewportFraction: 0.92,
+            autoPlayAnimationDuration: const Duration(milliseconds: 750),
+            enlargeCenterPage: false,
+            viewportFraction: 0.9,
             onPageChanged: (index, _) {
               setState(() => _current = index);
             },
           ),
-          items: _bannerUrls.map((url) {
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                url,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                errorBuilder: (context, error, stack) => Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.orange.shade400, Colors.red.shade400],
-                    ),
-                    borderRadius: BorderRadius.circular(10),
+          itemBuilder: (context, index, realIndex) {
+            final banner = _banners[index];
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(22),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.12),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
-                  child: const Center(
-                    child: Text(
-                      'SALE ĐẬM\nGIẢM ĐẾN 70%',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(22),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CachedNetworkImage(
+                      imageUrl: banner.imageUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          Container(color: const Color(0xFFFFF1EB)),
+                      errorWidget: (context, url, error) => Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Color(0xFFFF8A65), Color(0xFFEE4D2D)],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withValues(alpha: 0.08),
+                            Colors.black.withValues(alpha: 0.55),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.16),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: const Text(
+                              'Ưu đãi hôm nay',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            banner.title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              height: 1.1,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            banner.subtitle,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              height: 1.35,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
-          }).toList(),
+          },
         ),
         const SizedBox(height: 8),
         AnimatedSmoothIndicator(
-          activeIndex: _current,
-          count: _bannerUrls.length,
+          activeIndex: _current % _banners.length,
+          count: _banners.length,
           effect: const WormEffect(
-            dotWidth: 8,
+            dotWidth: 18,
             dotHeight: 8,
             activeDotColor: Color(0xFFEE4D2D),
-            dotColor: Colors.grey,
+            dotColor: Color(0xFFD7D7D7),
           ),
         ),
       ],

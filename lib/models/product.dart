@@ -35,7 +35,10 @@ class Product {
   // Fake sold count based on rating count for display purposes
   String get soldDisplay {
     if (ratingCount >= 1000) {
-      return 'Đã bán ${(ratingCount / 1000).toStringAsFixed(1)}k';
+      final shortValue = (ratingCount / 1000)
+          .toStringAsFixed(ratingCount >= 10000 ? 0 : 1)
+          .replaceAll('.0', '');
+      return 'Đã bán ${shortValue}k';
     }
     return 'Đã bán $ratingCount';
   }
@@ -44,7 +47,8 @@ class Product {
   double get originalPrice => price * 1.2;
 
   // Fake discount tag
-  String get discountTag => '-${((1 - price / originalPrice) * 100).toStringAsFixed(0)}%';
+  String get discountTag =>
+      '-${((1 - price / originalPrice) * 100).toStringAsFixed(0)}%';
 
   // Extra images (same image but faking multiple angles for demo)
   List<String> get images => [image, image, image];

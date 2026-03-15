@@ -15,9 +15,12 @@ class OrderProvider extends ChangeNotifier {
     required String address,
     required String paymentMethod,
   }) {
+    final snapshotItems =
+        items.map((item) => item.copyWith()).toList(growable: false);
+
     final order = Order(
       id: 'ORD-${DateTime.now().millisecondsSinceEpoch}',
-      items: List.from(items),
+      items: snapshotItems,
       address: address,
       paymentMethod: paymentMethod,
       status: OrderStatus.pending,

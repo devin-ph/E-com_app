@@ -4,23 +4,48 @@ import '../services/api_service.dart';
 
 class ProductProvider extends ChangeNotifier {
   final ApiService _api = ApiService();
+  static const Set<String> _apiCategories = {
+    "men's clothing",
+    "women's clothing",
+    'electronics',
+    'jewelery',
+  };
 
   List<Product> _products = [];
   bool _isLoading = false;
   bool _hasMore = true;
   String? _error;
   String _selectedCategory = ''; // empty = all
+  String _searchQuery = '';
   int _currentPage = 1;
   static const int _pageSize = 10;
 
   List<Product> get products => _products;
+  List<Product> get visibleProducts {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) {
+      return _products;
+    }
+    return _products
+        .where((product) => product.title.toLowerCase().contains(query))
+        .toList();
+  }
+
   bool get isLoading => _isLoading;
   bool get hasMore => _hasMore;
   String? get error => _error;
   String get selectedCategory => _selectedCategory;
+  String get searchQuery => _searchQuery;
 
   Future<void> loadProducts({bool refresh = false}) async {
     if (_isLoading) return;
+    final selected = _selectedCategory;
+    final isLocalOnlyCategory = selected.startsWith('local_');
+
+    if (isLocalOnlyCategory && !refresh) {
+      return;
+    }
+
     if (refresh) {
       _currentPage = 1;
       _hasMore = true;
@@ -33,20 +58,31 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final newProducts = await _api.fetchProducts(
-        category: _selectedCategory.isEmpty ? null : _selectedCategory,
-        limit: _pageSize,
-        page: _currentPage,
-      );
-      if (newProducts.length < _pageSize) {
+      if (isLocalOnlyCategory) {
+        final allProducts = await _api.fetchProducts(
+          category: null,
+          limit: 100,
+          page: 1,
+        );
+        _products = _applyLocalCategoryFilter(allProducts, selected);
         _hasMore = false;
-      }
-      if (refresh) {
-        _products = newProducts;
       } else {
-        _products = [..._products, ...newProducts];
+        final apiCategory = _apiCategories.contains(selected) ? selected : null;
+        final newProducts = await _api.fetchProducts(
+          category: apiCategory,
+          limit: _pageSize,
+          page: _currentPage,
+        );
+        if (newProducts.length < _pageSize) {
+          _hasMore = false;
+        }
+        if (refresh) {
+          _products = newProducts;
+        } else {
+          _products = [..._products, ...newProducts];
+        }
+        _currentPage++;
       }
-      _currentPage++;
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -59,5 +95,33 @@ class ProductProvider extends ChangeNotifier {
     if (_selectedCategory == category) return;
     _selectedCategory = category;
     loadProducts(refresh: true);
+  }
+
+  void setSearchQuery(String query) {
+    if (_searchQuery == query) return;
+    _searchQuery = query;
+    notifyListeners();
+  }
+
+  List<Product> _applyLocalCategoryFilter(
+    List<Product> products,
+    String category,
+  ) {
+    final keywordMap = <String, List<String>>{
+      'local_cosmetics': ['cream', 'beauty', 'makeup', 'skin', 'cosmetic'],
+      'local_home': ['home', 'kitchen', 'furniture', 'decor', 'lamp'],
+      'local_sport': ['sport', 'fitness', 'gym', 'running', 'outdoor'],
+    };
+
+    final keywords = keywordMap[category];
+    if (keywords == null || keywords.isEmpty) {
+      return products;
+    }
+
+    return products.where((product) {
+      final text = '${product.title} ${product.description} ${product.category}'
+          .toLowerCase();
+      return keywords.any(text.contains);
+    }).toList();
   }
 }

@@ -8,6 +8,8 @@ import 'screens/product_detail/product_detail_screen.dart';
 import 'screens/cart/cart_screen.dart';
 import 'screens/checkout/checkout_screen.dart';
 import 'screens/orders/orders_screen.dart';
+import 'models/product.dart';
+import 'utils/product_navigation_cache.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,25 +30,53 @@ class MyApp extends StatelessWidget {
         title: 'TH4 - G3C3',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFFEE4D2D),
-          ),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFEE4D2D)),
           useMaterial3: true,
           fontFamily: 'Roboto',
         ),
         initialRoute: '/',
         routes: {
           '/': (context) => const HomeScreen(),
-          '/product-detail': (context) => const ProductDetailScreen(),
           '/cart': (context) => const CartScreen(),
           '/checkout': (context) => const CheckoutScreen(),
           '/orders': (context) => const OrdersScreen(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/product-detail') {
+            final resolvedProduct = settings.arguments is Product
+                ? settings.arguments as Product
+                : ProductNavigationCache.lastSelectedProduct;
+
+            if (resolvedProduct == null) {
+              return MaterialPageRoute<void>(
+                builder: (_) => Scaffold(
+                  appBar: AppBar(title: const Text('Chi tiet san pham')),
+                  body: const Center(
+                    child: Text(
+                      'Khong tim thay du lieu san pham.\nVui long quay lai va chon lai san pham.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                settings: settings,
+              );
+            }
+
+            return MaterialPageRoute<void>(
+              builder: (_) => const ProductDetailScreen(),
+              settings: RouteSettings(
+                name: settings.name,
+                arguments: resolvedProduct,
+              ),
+            );
+          }
+
+          return null;
         },
       ),
     );
   }
 }
-
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
