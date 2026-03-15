@@ -12,6 +12,8 @@ class ProductGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ProductProvider>(
       builder: (context, provider, child) {
+        final products = provider.visibleProducts;
+
         if (provider.isLoading && provider.products.isEmpty) {
           return const SliverToBoxAdapter(child: ProductGridShimmer());
         }
@@ -44,12 +46,12 @@ class ProductGrid extends StatelessWidget {
           );
         }
 
-        if (provider.products.isEmpty) {
+        if (products.isEmpty) {
           return const SliverFillRemaining(
             hasScrollBody: false,
             child: Center(
               child: Text(
-                'Chưa có sản phẩm phù hợp',
+                'Không tìm thấy sản phẩm phù hợp',
                 style: TextStyle(color: Colors.grey),
               ),
             ),
@@ -57,7 +59,7 @@ class ProductGrid extends StatelessWidget {
         }
 
         final itemCount =
-            provider.products.length +
+            products.length +
             ((provider.isLoading && provider.products.isNotEmpty) ? 1 : 0);
 
         return SliverPadding(
@@ -68,7 +70,7 @@ class ProductGrid extends StatelessWidget {
             crossAxisSpacing: 12,
             childCount: itemCount,
             itemBuilder: (context, index) {
-              if (index >= provider.products.length) {
+              if (index >= products.length) {
                 return Container(
                   height: 110,
                   alignment: Alignment.center,
@@ -82,7 +84,7 @@ class ProductGrid extends StatelessWidget {
                 );
               }
 
-              final product = provider.products[index];
+              final product = products[index];
               final imageHeight = switch (index % 4) {
                 0 => 188.0,
                 1 => 228.0,
