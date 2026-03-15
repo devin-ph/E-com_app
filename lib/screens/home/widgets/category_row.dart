@@ -14,57 +14,92 @@ class CategoryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 90,
-      child: ListView.separated(
+      height: 170,
+      child: GridView.builder(
         scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 12),
         itemCount: kCategories.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 12),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 1.15,
+        ),
         itemBuilder: (context, index) {
           final cat = kCategories[index];
           final isSelected = selectedCategory == cat.apiCategory;
-          return GestureDetector(
-            onTap: () => onCategorySelected(cat.apiCategory),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? cat.color
-                        : cat.color.withValues(alpha: 0.12),
-                    shape: BoxShape.circle,
-                    border: isSelected
-                        ? Border.all(color: cat.color, width: 2)
-                        : null,
-                  ),
-                  child: Icon(
-                    cat.icon,
-                    color: isSelected ? Colors.white : cat.color,
-                    size: 26,
-                  ),
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(22),
+              onTap: () => onCategorySelected(cat.apiCategory),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
                 ),
-                const SizedBox(height: 6),
-                SizedBox(
-                  width: 64,
-                  child: Text(
-                    cat.name,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: isSelected ? cat.color : Colors.black87,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(
+                    color: isSelected ? cat.color : Colors.grey.shade200,
+                    width: isSelected ? 1.8 : 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: cat.color.withValues(
+                        alpha: isSelected ? 0.18 : 0.06,
+                      ),
+                      blurRadius: 18,
+                      offset: const Offset(0, 10),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? cat.color
+                            : cat.color.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        cat.icon,
+                        color: isSelected ? Colors.white : cat.color,
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          cat.name,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 10,
+                            height: 1.1,
+                            color: isSelected
+                                ? cat.color
+                                : const Color(0xFF333333),
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         },
