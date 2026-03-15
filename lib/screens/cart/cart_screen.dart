@@ -193,7 +193,7 @@ class _CartItemTile extends StatelessWidget {
                     // Variation tags
                     Row(
                       children: [
-                        _Tag('Size: ${item.size}'),
+                        _Tag('Kích cỡ: ${item.size}'),
                         const SizedBox(width: 4),
                         _Tag('Màu: ${item.color}'),
                       ],

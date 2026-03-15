@@ -8,17 +8,17 @@ import '../../../utils/formatters.dart';
 const List<String> _defaultSizes = ['S', 'M', 'L', 'XL', 'XXL'];
 const List<String> _electronicsCapacities = ['128Gb', '256Gb', '512Gb', '1Tb'];
 const List<Map<String, dynamic>> _defaultColors = [
-  {'label': 'Đen', 'value': 'black', 'color': Colors.black},
-  {'label': 'Trắng', 'value': 'white', 'color': Colors.white},
-  {'label': 'Đỏ', 'value': 'red', 'color': Colors.red},
-  {'label': 'Xanh', 'value': 'blue', 'color': Colors.blue},
-  {'label': 'Vàng', 'value': 'yellow', 'color': Colors.amber},
+  {'label': 'Đen', 'value': 'Đen', 'color': Colors.black},
+  {'label': 'Trắng', 'value': 'Trắng', 'color': Colors.white},
+  {'label': 'Đỏ', 'value': 'Đỏ', 'color': Colors.red},
+  {'label': 'Xanh', 'value': 'Xanh', 'color': Colors.blue},
+  {'label': 'Vàng', 'value': 'Vàng', 'color': Colors.amber},
 ];
 
 const List<String> _jewelrySizes = ['13', '14', '15', '16', '17'];
 const List<Map<String, dynamic>> _jewelryColors = [
-  {'label': 'Bạc', 'value': 'silver', 'color': Color(0xFFC0C0C0)},
-  {'label': 'Vàng kim', 'value': 'gold', 'color': Color(0xFFD4AF37)},
+  {'label': 'Bạc', 'value': 'Bạc', 'color': Color(0xFFC0C0C0)},
+  {'label': 'Vàng kim', 'value': 'Vàng kim', 'color': Color(0xFFD4AF37)},
 ];
 
 const Map<int, String> _productTitlesVi = {
