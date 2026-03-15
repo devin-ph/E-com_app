@@ -17,29 +17,43 @@ class _HomeScreenState extends State<HomeScreen> {
   static const Color _primaryColor = Color(0xFFEE4D2D);
 
   final TextEditingController _searchController = TextEditingController();
-  late ScrollController _outerScrollController;
+  late final ScrollController _scrollController;
   bool _searchBarCollapsed = false;
 
   @override
   void initState() {
     super.initState();
-    _outerScrollController = ScrollController();
-    _outerScrollController.addListener(() {
-      final collapsed = _outerScrollController.offset > 80;
-      if (collapsed != _searchBarCollapsed) {
-        setState(() => _searchBarCollapsed = collapsed);
-      }
-    });
+    _scrollController = ScrollController()..addListener(_handleScroll);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProductProvider>().loadProducts(refresh: true);
     });
   }
 
+  void _handleScroll() {
+    if (!_scrollController.hasClients) {
+      return;
+    }
+
+    final collapsed = _scrollController.offset > 72;
+    if (collapsed != _searchBarCollapsed && mounted) {
+      setState(() => _searchBarCollapsed = collapsed);
+    }
+
+    final provider = context.read<ProductProvider>();
+    if (_scrollController.position.extentAfter < 600 &&
+        !provider.isLoading &&
+        provider.hasMore) {
+      provider.loadProducts();
+    }
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
-    _outerScrollController.dispose();
+    _scrollController
+      ..removeListener(_handleScroll)
+      ..dispose();
     super.dispose();
   }
 
@@ -50,140 +64,258 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: NestedScrollView(
-        controller: _outerScrollController,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
+      backgroundColor: const Color(0xFFF6F6F6),
+      body: RefreshIndicator(
+        color: _primaryColor,
+        onRefresh: _onRefresh,
+        child: CustomScrollView(
+          controller: _scrollController,
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          slivers: [
             SliverAppBar(
               pinned: true,
-              floating: true,
-              snap: true,
               backgroundColor: _primaryColor,
-              expandedHeight: 120,
-              forceElevated: innerBoxIsScrolled,
+              expandedHeight: 132,
+              elevation: 0,
+              titleSpacing: 16,
               title: const Text(
                 'TH4 - Nhóm 1',
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
                   fontSize: 18,
                 ),
               ),
               actions: [
                 const CartIconButton(),
                 IconButton(
-                  icon: const Icon(Icons.notifications_outlined,
-                      color: Colors.white),
+                  icon: const Icon(
+                    Icons.notifications_none_rounded,
+                    color: Colors.white,
+                  ),
                   onPressed: () {},
                 ),
+                const SizedBox(width: 6),
               ],
               flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.pin,
-                background: Container(
-                  color: _primaryColor,
-                  alignment: Alignment.bottomCenter,
-                  padding:
-                      const EdgeInsets.fromLTRB(12, 0, 12, 8),
-                  child: const SizedBox.shrink(),
-                ),
-              ),
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(48),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  color: _searchBarCollapsed
-                      ? _primaryColor
-                      : Colors.transparent,
-                  padding:
-                      const EdgeInsets.fromLTRB(12, 4, 12, 8),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Tìm kiếm sản phẩm...',
-                      prefixIcon: const Icon(Icons.search,
-                          color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding:
-                          const EdgeInsets.symmetric(vertical: 0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide.none,
+                collapseMode: CollapseMode.parallax,
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    const DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0xFFFF784E), Color(0xFFEE4D2D)],
+                        ),
                       ),
                     ),
-                    onSubmitted: (value) {
-                      // Search filtering is a bonus feature
-                    },
-                  ),
+                    Positioned(
+                      top: -28,
+                      right: -20,
+                      child: Container(
+                        width: 118,
+                        height: 118,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: -36,
+                      left: -12,
+                      child: Container(
+                        width: 140,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ];
-        },
-        body: RefreshIndicator(
-          color: _primaryColor,
-          onRefresh: _onRefresh,
-          child: CustomScrollView(
-            slivers: [
-              // Banner carousel
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 12),
-                  child: BannerCarousel(),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SearchHeaderDelegate(
+                controller: _searchController,
+                primaryColor: _primaryColor,
+                isCollapsed: _searchBarCollapsed,
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(12, 12, 12, 0),
+                child: BannerCarousel(),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(12, 22, 12, 10),
+                child: _SectionHeader(
+                  title: 'Danh mục sản phẩm',
+                  subtitle: 'Khám phá nhanh theo nhóm ngành',
+                  icon: Icons.grid_view_rounded,
                 ),
               ),
-              // Section title: Categories
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding:
-                      EdgeInsets.fromLTRB(12, 16, 12, 8),
-                  child: Text(
-                    'Danh mục sản phẩm',
-                    style: TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
+            ),
+            SliverToBoxAdapter(
+              child: Consumer<ProductProvider>(
+                builder: (context, provider, _) => CategoryRow(
+                  selectedCategory: provider.selectedCategory,
+                  onCategorySelected: provider.setCategory,
                 ),
               ),
-              // Category filter row
-              SliverToBoxAdapter(
-                child: Consumer<ProductProvider>(
-                  builder: (context, provider, _) => CategoryRow(
-                    selectedCategory: provider.selectedCategory,
-                    onCategorySelected: (cat) =>
-                        provider.setCategory(cat),
-                  ),
+            ),
+            const SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(12, 18, 12, 10),
+                child: _SectionHeader(
+                  title: 'Gợi ý hôm nay',
+                  subtitle: 'Vuốt để làm mới, cuộn để tải thêm sản phẩm',
+                  icon: Icons.local_fire_department_rounded,
                 ),
               ),
-              // Section title: Daily Discover
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding:
-                      EdgeInsets.fromLTRB(12, 16, 12, 10),
-                  child: Row(
-                    children: [
-                      Icon(Icons.local_fire_department,
-                          color: Color(0xFFEE4D2D)),
-                      SizedBox(width: 6),
-                      Text(
-                        'Gợi ý hôm nay',
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+            ),
+            const ProductGrid(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+
+  const _SectionHeader({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFEFE9),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Icon(icon, color: const Color(0xFFEE4D2D)),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF222222),
                 ),
               ),
-              // Product grid
-              const SliverFillRemaining(
-                hasScrollBody: true,
-                child: ProductGrid(),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Color(0xFF777777),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final TextEditingController controller;
+  final Color primaryColor;
+  final bool isCollapsed;
+
+  const _SearchHeaderDelegate({
+    required this.controller,
+    required this.primaryColor,
+    required this.isCollapsed,
+  });
+
+  @override
+  double get minExtent => 68;
+
+  @override
+  double get maxExtent => 68;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      color: isCollapsed ? primaryColor : Colors.transparent,
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: isCollapsed ? 0.12 : 0.05),
+              blurRadius: isCollapsed ? 16 : 10,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: TextField(
+          controller: controller,
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration(
+            hintText: 'Tìm kiếm sản phẩm, thương hiệu, ưu đãi...',
+            hintStyle: const TextStyle(color: Color(0xFF9A9A9A), fontSize: 14),
+            prefixIcon: const Icon(
+              Icons.search_rounded,
+              color: Color(0xFF666666),
+            ),
+            suffixIcon: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.tune_rounded, color: Color(0xFF666666)),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(vertical: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          onSubmitted: (_) {},
+        ),
       ),
     );
+  }
+
+  @override
+  bool shouldRebuild(covariant _SearchHeaderDelegate oldDelegate) {
+    return oldDelegate.isCollapsed != isCollapsed ||
+        oldDelegate.controller != controller ||
+        oldDelegate.primaryColor != primaryColor;
   }
 }
