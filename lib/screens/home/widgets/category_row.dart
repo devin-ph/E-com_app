@@ -13,18 +13,35 @@ class CategoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    const double itemsPerRow = 4;
+    const double horizontalPadding = 24;
+    const double spacing = 12;
+
+    final double itemWidth =
+        (screenWidth - horizontalPadding - (spacing * (itemsPerRow - 1))) /
+        itemsPerRow;
+
+    const double gridHeight = 200;
+    const double verticalPadding = 8;
+
+    const double itemHeight = (gridHeight - verticalPadding - spacing) / 2;
+
+    final double responsiveAspectRatio = itemHeight / itemWidth;
+
     return SizedBox(
-      height: 170,
+      height: gridHeight,
       child: GridView.builder(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         itemCount: kCategories.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 1.15,
+          mainAxisSpacing: spacing,
+          crossAxisSpacing: spacing,
+          childAspectRatio: responsiveAspectRatio,
         ),
         itemBuilder: (context, index) {
           final cat = kCategories[index];

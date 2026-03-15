@@ -81,24 +81,14 @@ class _HomeScreenState extends State<HomeScreen> {
               elevation: 0,
               titleSpacing: 16,
               title: const Text(
-                'TH4 - Nhóm 1',
+                'TH4 - Nhóm G3-C3',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
                   fontSize: 18,
                 ),
               ),
-              actions: [
-                const CartIconButton(),
-                IconButton(
-                  icon: const Icon(
-                    Icons.notifications_none_rounded,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {},
-                ),
-                const SizedBox(width: 6),
-              ],
+              actions: [const CartIconButton(), const SizedBox(width: 6)],
               flexibleSpace: FlexibleSpaceBar(
                 collapseMode: CollapseMode.parallax,
                 background: Stack(
@@ -173,13 +163,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           Icons.search_rounded,
                           color: Color(0xFF666666),
                         ),
-                        suffixIcon: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.tune_rounded,
-                            color: Color(0xFF666666),
-                          ),
-                        ),
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: const EdgeInsets.symmetric(
@@ -190,7 +173,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      onSubmitted: (_) {},
+                      onChanged: (value) {
+                        context.read<ProductProvider>().setSearchQuery(value);
+                      },
+                      onSubmitted: (value) {
+                        context.read<ProductProvider>().setSearchQuery(value);
+                      },
                     ),
                   ),
                 ),
