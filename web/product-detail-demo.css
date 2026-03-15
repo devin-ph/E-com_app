@@ -1,0 +1,165 @@
+:root {
+  --bg: #f3f4f6;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --brand: #ee4d2d;
+  --brand-2: #f59e0b;
+  --line: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  color: var(--text);
+}
+
+.page {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 100vh;
+  gap: 16px;
+  padding: 16px;
+}
+
+.product-list,
+.detail-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.product-list {
+  padding: 16px;
+}
+
+.product-list h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-item {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  background: #fff;
+}
+
+.product-item:hover,
+.product-item.active {
+  border-color: var(--brand);
+  box-shadow: 0 8px 20px rgba(238, 77, 45, 0.12);
+  transform: translateY(-1px);
+}
+
+.product-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.product-meta {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.detail-panel {
+  overflow: hidden;
+}
+
+.image-wrap {
+  height: 360px;
+  display: grid;
+  place-items: center;
+  background: #f8fafc;
+}
+
+.image-wrap img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.action-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.action-bar button {
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 14px 8px;
+  cursor: pointer;
+}
+
+.btn-add {
+  background: var(--brand-2);
+}
+
+.btn-buy {
+  background: var(--brand);
+}
+
+.detail-content {
+  padding: 18px;
+}
+
+.detail-content h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.price {
+  margin: 8px 0;
+  font-size: 24px;
+  color: var(--brand);
+  font-weight: 800;
+}
+
+.category {
+  margin: 0;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.description {
+  margin: 14px 0;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.spec-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.spec-list li {
+  margin-bottom: 6px;
+}
+
+@media (max-width: 960px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .image-wrap {
+    height: 280px;
+  }
+}

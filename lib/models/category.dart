@@ -49,18 +49,18 @@ const List<AppCategory> kCategories = [
     name: 'Mỹ phẩm',
     icon: Icons.face_retouching_natural,
     color: Color(0xFFE91E63),
-    apiCategory: '',
+    apiCategory: 'local_cosmetics',
   ),
   AppCategory(
     name: 'Gia dụng',
     icon: Icons.kitchen_outlined,
     color: Color(0xFF2E7D32),
-    apiCategory: '',
+    apiCategory: 'local_home',
   ),
   AppCategory(
     name: 'Thể thao',
     icon: Icons.sports_basketball_outlined,
     color: Color(0xFFFF6F00),
-    apiCategory: '',
+    apiCategory: 'local_sport',
   ),
 ];
