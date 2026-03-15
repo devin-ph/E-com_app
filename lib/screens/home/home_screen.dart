@@ -218,10 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-            const SliverFillRemaining(
-              hasScrollBody: true,
-              child: ProductGrid(),
-            ),
+            const ProductGrid(),
           ],
         ),
       ),
