@@ -140,13 +140,62 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SearchHeaderDelegate(
-                controller: _searchController,
-                primaryColor: _primaryColor,
-                isCollapsed: _searchBarCollapsed,
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(62),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  color: _searchBarCollapsed
+                      ? _primaryColor
+                      : Colors.transparent,
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(
+                            alpha: _searchBarCollapsed ? 0.12 : 0.05,
+                          ),
+                          blurRadius: _searchBarCollapsed ? 16 : 10,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      textInputAction: TextInputAction.search,
+                      decoration: InputDecoration(
+                        hintText: 'Tìm kiếm sản phẩm, thương hiệu, ưu đãi...',
+                        hintStyle: const TextStyle(
+                          color: Color(0xFF9A9A9A),
+                          fontSize: 14,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search_rounded,
+                          color: Color(0xFF666666),
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.tune_rounded,
+                            color: Color(0xFF666666),
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      onSubmitted: (_) {},
+                    ),
+                  ),
+                ),
               ),
             ),
             const SliverToBoxAdapter(
@@ -242,80 +291,5 @@ class _SectionHeader extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class _SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final TextEditingController controller;
-  final Color primaryColor;
-  final bool isCollapsed;
-
-  const _SearchHeaderDelegate({
-    required this.controller,
-    required this.primaryColor,
-    required this.isCollapsed,
-  });
-
-  @override
-  double get minExtent => 68;
-
-  @override
-  double get maxExtent => 68;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      color: isCollapsed ? primaryColor : Colors.transparent,
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: isCollapsed ? 0.12 : 0.05),
-              blurRadius: isCollapsed ? 16 : 10,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-        child: TextField(
-          controller: controller,
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-            hintText: 'Tìm kiếm sản phẩm, thương hiệu, ưu đãi...',
-            hintStyle: const TextStyle(color: Color(0xFF9A9A9A), fontSize: 14),
-            prefixIcon: const Icon(
-              Icons.search_rounded,
-              color: Color(0xFF666666),
-            ),
-            suffixIcon: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.tune_rounded, color: Color(0xFF666666)),
-            ),
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(vertical: 14),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(18),
-              borderSide: BorderSide.none,
-            ),
-          ),
-          onSubmitted: (_) {},
-        ),
-      ),
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant _SearchHeaderDelegate oldDelegate) {
-    return oldDelegate.isCollapsed != isCollapsed ||
-        oldDelegate.controller != controller ||
-        oldDelegate.primaryColor != primaryColor;
   }
 }

@@ -54,22 +54,27 @@ class _BannerCarouselState extends State<BannerCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    if (_banners.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       children: [
-        CarouselSlider(
+        CarouselSlider.builder(
+          itemCount: _banners.length,
           options: CarouselOptions(
             height: 176,
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 3),
             autoPlayAnimationDuration: const Duration(milliseconds: 750),
-            enlargeCenterPage: true,
-            enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+            enlargeCenterPage: false,
             viewportFraction: 0.9,
             onPageChanged: (index, _) {
               setState(() => _current = index);
             },
           ),
-          items: _banners.map((banner) {
+          itemBuilder: (context, index, realIndex) {
+            final banner = _banners[index];
             return Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(22),
@@ -163,11 +168,11 @@ class _BannerCarouselState extends State<BannerCarousel> {
                 ),
               ),
             );
-          }).toList(),
+          },
         ),
         const SizedBox(height: 8),
         AnimatedSmoothIndicator(
-          activeIndex: _current,
+          activeIndex: _current % _banners.length,
           count: _banners.length,
           effect: const WormEffect(
             dotWidth: 18,
