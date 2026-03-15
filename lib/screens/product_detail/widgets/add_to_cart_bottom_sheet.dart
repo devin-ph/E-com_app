@@ -1,3 +1,4 @@
+import 'package:e_com_app/models/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/product.dart';
@@ -363,24 +364,69 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
           )
         : widget.product;
 
-    context.read<CartProvider>().addItem(
+    final cartItem = CartItem(
       product: productForCart,
       size: _selectedSize,
       color: _selectedColor,
       quantity: _quantity,
     );
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('✓ Đã thêm vào giỏ hàng thành công!'),
-        backgroundColor: Color(0xFF2E7D32),
-        duration: Duration(seconds: 2),
-      ),
-    );
+
     if (widget.buyNow) {
-      Navigator.pushNamed(context, '/cart');
+      // Đóng bottom sheet
+      Navigator.pop(context);
+      // Chuyển tới CheckoutScreen và truyền sản phẩm
+      Navigator.pushNamed(context, '/checkout', arguments: [cartItem]);
+    } else {
+      // Thêm vào giỏ hàng
+      context.read<CartProvider>().addItem(
+        product: productForCart,
+        size: _selectedSize,
+        color: _selectedColor,
+        quantity: _quantity,
+      );
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('✓ Đã thêm vào giỏ hàng thành công!'),
+          backgroundColor: Color(0xFF2E7D32),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
+
+  // void _confirm() {
+  //   final productForCart = _isElectronics
+  //       ? Product(
+  //           id: widget.product.id,
+  //           title: widget.product.title,
+  //           price: _effectivePrice,
+  //           description: widget.product.description,
+  //           category: widget.product.category,
+  //           image: widget.product.image,
+  //           rating: widget.product.rating,
+  //           ratingCount: widget.product.ratingCount,
+  //         )
+  //       : widget.product;
+
+  //   context.read<CartProvider>().addItem(
+  //     product: productForCart,
+  //     size: _selectedSize,
+  //     color: _selectedColor,
+  //     quantity: _quantity,
+  //   );
+  //   Navigator.pop(context);
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(
+  //       content: Text('✓ Đã thêm vào giỏ hàng thành công!'),
+  //       backgroundColor: Color(0xFF2E7D32),
+  //       duration: Duration(seconds: 2),
+  //     ),
+  //   );
+  //   if (widget.buyNow) {
+  //     Navigator.pushNamed(context, '/cart');
+  //   }
+  // }
 }
 
 class _QuantityButton extends StatelessWidget {
