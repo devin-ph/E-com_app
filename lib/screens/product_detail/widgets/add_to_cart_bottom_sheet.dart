@@ -7,28 +7,11 @@ import '../../../utils/formatters.dart';
 const List<String> _defaultSizes = ['S', 'M', 'L', 'XL', 'XXL'];
 const List<String> _electronicsCapacities = ['128Gb', '256Gb', '512Gb', '1Tb'];
 const List<Map<String, dynamic>> _defaultColors = [
-const List<String> _sizes = ['S', 'M', 'L', 'XL', 'XXL'];
-const List<String> _electronicsSizes = ['128Gb', '256Gb', '512Gb', '1Tb'];
-const List<String> _jewelrySizes = [
-  'Size 13',
-  'Size 14',
-  'Size 15',
-  'Size 16',
-  'Size 17',
-  'Size 18',
-  'Size 19',
-  'Size 20',
-];
-const List<Map<String, dynamic>> _colors = [
   {'label': 'Đen', 'value': 'black', 'color': Colors.black},
   {'label': 'Trắng', 'value': 'white', 'color': Colors.white},
   {'label': 'Đỏ', 'value': 'red', 'color': Colors.red},
   {'label': 'Xanh', 'value': 'blue', 'color': Colors.blue},
   {'label': 'Vàng', 'value': 'yellow', 'color': Colors.amber},
-];
-const List<Map<String, dynamic>> _jewelryColors = [
-  {'label': 'Bạc', 'value': 'silver', 'color': Color(0xFFC0C0C0)},
-  {'label': 'Vàng', 'value': 'gold', 'color': Color(0xFFFFC107)},
 ];
 
 const List<String> _jewelrySizes = ['13', '14', '15', '16', '17'];
@@ -90,8 +73,6 @@ class AddToCartBottomSheet extends StatefulWidget {
 class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
   String _selectedSize = _defaultSizes.first;
   String _selectedColor = _defaultColors.first['value'] as String;
-  late String _selectedSize;
-  late String _selectedColor;
   int _quantity = 1;
 
   static const double _vndStepByCapacity = 500000;
@@ -139,57 +120,8 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _selectedSize = _availableSizes.first;
-    _selectedColor = (_availableColors.first['value'] as String);
-  }
-
-  bool get _isJewelryProduct {
-    return widget.product.category.toLowerCase().trim() == 'jewelery';
-  }
-
-  bool get _isElectronicsProduct {
-    return widget.product.category.toLowerCase().trim() == 'electronics';
-  }
-
-  List<String> get _availableSizes {
-    if (_isJewelryProduct) return _jewelrySizes;
-    if (_isElectronicsProduct) return _electronicsSizes;
-    return _sizes;
-  }
-
-  List<Map<String, dynamic>> get _availableColors {
-    return _isJewelryProduct ? _jewelryColors : _colors;
-  }
-
-  bool get _showsColorSelector => !_isElectronicsProduct;
-
-  double get _selectedPrice {
-    if (!_isElectronicsProduct) return widget.product.price;
-    final index = _electronicsSizes.indexOf(_selectedSize);
-    final adjustedIndex = index < 0 ? 0 : index;
-    return widget.product.price + (adjustedIndex * 20);
-  }
-
-  Product get _selectedVariantProduct {
-    if (!_isElectronicsProduct) return widget.product;
-    return Product(
-      id: widget.product.id,
-      title: widget.product.title,
-      price: _selectedPrice,
-      description: widget.product.description,
-      category: widget.product.category,
-      image: widget.product.image,
-      rating: widget.product.rating,
-      ratingCount: widget.product.ratingCount,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     final product = widget.product;
-    final displayPrice = _selectedPrice;
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -250,7 +182,6 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
                       const SizedBox(height: 6),
                       Text(
                         _displayPrice,
-                        Formatters.currency(displayPrice),
                         style: const TextStyle(
                           color: Color(0xFFEE4D2D),
                           fontSize: 18,
@@ -266,14 +197,12 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
             // Size selector
             Text(
               _isElectronics ? 'Chọn dung lượng' : 'Chọn Kích cỡ',
-              _isElectronicsProduct ? 'Chọn dung lượng' : 'Chọn Kích cỡ',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
-              runSpacing: 8,
-              children: _availableSizes.map((size) {
+              children: _sizes.map((size) {
                 final selected = size == _selectedSize;
                 return GestureDetector(
                   onTap: () => setState(() => _selectedSize = size),
@@ -310,7 +239,6 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
             if (_isElectronics)
               ...[]
             else ...[
-            if (_showsColorSelector) ...[
               const SizedBox(height: 16),
               // Color selector
               const Text(
@@ -321,8 +249,6 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
               Wrap(
                 spacing: 8,
                 children: _colors.map((c) {
-                runSpacing: 8,
-                children: _availableColors.map((c) {
                   final selected = c['value'] == _selectedColor;
                   return GestureDetector(
                     onTap: () =>
@@ -364,9 +290,6 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
               ),
             ],
             const SizedBox(height: 16),
-              const SizedBox(height: 16),
-            ] else
-              const SizedBox(height: 16),
             // Quantity selector
             Row(
               children: [
@@ -444,9 +367,6 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
       product: productForCart,
       size: _selectedSize,
       color: _selectedColor,
-      product: _selectedVariantProduct,
-      size: _selectedSize,
-      color: _showsColorSelector ? _selectedColor : 'khong-mau',
       quantity: _quantity,
     );
     Navigator.pop(context);
