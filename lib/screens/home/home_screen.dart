@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       controller: _searchController,
                       textInputAction: TextInputAction.search,
                       decoration: InputDecoration(
-                        hintText: 'Tìm ki?m s?n ph?m, thuong hi?u, uu dãi...',
+                        hintText: 'Tìm kiếm sản phẩm, thương hiệu, ưu đãi...',
                         hintStyle: const TextStyle(
                           color: Color(0xFF9A9A9A),
                           fontSize: 14,
@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(12, 22, 12, 10),
                 child: _SectionHeader(
-                  title: 'Danh m?c s?n ph?m',
+                  title: 'Danh mục sản phẩm',
                   subtitle: 'Khám phá nhanh theo nhóm ngành',
                   icon: Icons.grid_view_rounded,
                 ),
@@ -212,8 +212,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Padding(
                 padding: EdgeInsets.fromLTRB(12, 18, 12, 10),
                 child: _SectionHeader(
-                  title: 'G?i ý hôm nay',
-                  subtitle: 'Vu?t d? làm m?i, cu?n d? t?i thêm s?n ph?m',
+                  title: 'Gợi ý hôm nay',
+                  subtitle: 'Vượt khó làm mới, cuốn dắt tới thêm sản phẩm',
                   icon: Icons.local_fire_department_rounded,
                 ),
               ),
