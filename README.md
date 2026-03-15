@@ -1,10 +1,10 @@
-# TH4 - Nhóm 1 — Mini E-Commerce App
+# TH4 - G3C3 — E-Commerce App
 
-Ứng dụng bán hàng Flutter, sử dụng **Provider** cho State Management và **FakeStore API** làm nguồn dữ liệu.
+Ứng dụng bán hàng xây dựng bằng Flutter
 
 ---
 
-## Cấu trúc thư mục (cho phép thành viên làm việc song song, không conflict)
+## Cấu trúc thư mục
 
 ```
 lib/
@@ -58,7 +58,7 @@ lib/
 
 ---
 
-## Quy tắc làm việc nhóm (tránh conflict)
+## Quy tắc làm việc nhóm 
 
 | Thành viên | Phụ trách                          | File được chỉnh                        |
 |---|---|---|
@@ -93,23 +93,7 @@ lib/
 ## Chạy dự án
 
 ```bash
+git clone https://github.com/devin-ph/E-com_app.git
 flutter pub get
 flutter run
 ```
-
-Nguồn dữ liệu: [FakeStore API](https://fakestoreapi.com)
-
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
