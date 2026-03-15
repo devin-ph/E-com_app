@@ -265,15 +265,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: Colors.black87,
-                        fontSize: 13,
                         height: 1.6,
+                        fontSize: 13,
                       ),
                     ),
                     secondChild: Text(
                       _localizedDescription(product),
                       style: const TextStyle(
                         color: Colors.black87,
-                        fontSize: 13,
                         height: 1.6,
                       ),
                     ),
