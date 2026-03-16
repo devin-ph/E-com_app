@@ -4,6 +4,7 @@ import '../../models/cart_item.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/order_provider.dart';
 import '../../utils/formatters.dart';
+import '../../utils/product_localization.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -30,16 +31,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final items =
-        ModalRoute.of(context)!.settings.arguments as List<CartItem>;
-    final totalAmount =
-        items.fold<double>(0, (sum, item) => sum + item.subtotal);
+    final items = ModalRoute.of(context)!.settings.arguments as List<CartItem>;
+    final totalAmount = items.fold<double>(
+      0,
+      (sum, item) => sum + item.subtotal,
+    );
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thanh toán',
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Thanh toán',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: const Color(0xFFEE4D2D),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -77,9 +80,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     label: 'Địa chỉ chi tiết',
                     icon: Icons.home_outlined,
                     maxLines: 1,
-                    validator: (v) => v == null || v.isEmpty
-                        ? 'Vui lòng nhập địa chỉ'
-                        : null,
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Vui lòng nhập địa chỉ' : null,
                   ),
                 ],
               ),
@@ -131,44 +133,51 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               icon: Icons.shopping_bag_outlined,
               child: Column(
                 children: [
-                  ...items.map((item) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.product.title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 13),
+                  ...items.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  localizedProductTitle(item.product),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                                Text(
+                                  'Cỡ: ${item.size} · ${item.color} · x${item.quantity}',
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.grey,
                                   ),
-                                  Text(
-                                    'Size: ${item.size} · ${item.color} · x${item.quantity}',
-                                    style: const TextStyle(
-                                        fontSize: 11, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 12),
-                            Text(
-                              Formatters.currency(item.subtotal),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFFEE4D2D)),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            Formatters.currency(item.subtotal),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFFEE4D2D),
                             ),
-                          ],
-                        ),
-                      )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   const Divider(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Tổng cộng:',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Tổng cộng:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text(
                         Formatters.currency(totalAmount),
                         style: const TextStyle(
@@ -191,7 +200,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget _buildPlaceOrderButton(
-      BuildContext context, List<CartItem> items, double total) {
+    BuildContext context,
+    List<CartItem> items,
+    double total,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -212,9 +224,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Tổng tiền',
-                      style:
-                          TextStyle(fontSize: 11, color: Colors.grey)),
+                  const Text(
+                    'Tổng tiền',
+                    style: TextStyle(fontSize: 11, color: Colors.grey),
+                  ),
                   Text(
                     Formatters.currency(total),
                     style: const TextStyle(
@@ -228,11 +241,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               const SizedBox(width: 16),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _isPlacing ? null : () => _placeOrder(context, items),
+                  onPressed: _isPlacing
+                      ? null
+                      : () => _placeOrder(context, items),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFEE4D2D),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   child: _isPlacing
@@ -240,14 +256,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
-                              color: Colors.white, strokeWidth: 2),
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
                         )
                       : const Text(
                           'ĐẶT HÀNG',
                           style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                 ),
               ),
@@ -258,8 +277,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  Future<void> _placeOrder(
-      BuildContext context, List<CartItem> items) async {
+  Future<void> _placeOrder(BuildContext context, List<CartItem> items) async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isPlacing = true);
@@ -278,10 +296,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         '${_nameController.text} - ${_phoneController.text}\n${_addressController.text}';
 
     orderProvider.placeOrder(
-          items: items,
-          address: address,
-          paymentMethod: _paymentMethod,
-        );
+      items: items,
+      address: address,
+      paymentMethod: _paymentMethod,
+    );
     cartProvider.removeCheckedItems();
 
     setState(() => _isPlacing = false);
@@ -290,8 +308,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       context: navigator.context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -302,14 +319,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 color: Color(0xFF2E7D32),
                 shape: BoxShape.circle,
               ),
-              child:
-                  const Icon(Icons.check, color: Colors.white, size: 40),
+              child: const Icon(Icons.check, color: Colors.white, size: 40),
             ),
             const SizedBox(height: 16),
             const Text(
               'Đặt hàng thành công!',
-              style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             const Text(
@@ -325,8 +340,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Navigator.pop(ctx);
               navigator.popUntil((route) => route.settings.name == '/');
             },
-            child: const Text('Về trang chủ',
-                style: TextStyle(color: Color(0xFFEE4D2D))),
+            child: const Text(
+              'Về trang chủ',
+              style: TextStyle(color: Color(0xFFEE4D2D)),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -335,9 +352,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               navigator.pushNamed('/orders');
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFEE4D2D)),
-            child: const Text('Xem đơn hàng',
-                style: TextStyle(color: Colors.white)),
+              backgroundColor: const Color(0xFFEE4D2D),
+            ),
+            child: const Text(
+              'Xem đơn hàng',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -360,8 +380,7 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 1,
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -374,7 +393,9 @@ class _SectionCard extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
                 ),
               ],
             ),
@@ -427,7 +448,9 @@ class _FormField extends StatelessWidget {
           borderSide: const BorderSide(color: Color(0xFFEE4D2D)),
         ),
         contentPadding: const EdgeInsets.symmetric(
-            vertical: 12, horizontal: 12),
+          vertical: 12,
+          horizontal: 12,
+        ),
       ),
     );
   }
@@ -493,8 +516,7 @@ class _PaymentOption extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 14,
-                  fontWeight:
-                      isSelected ? FontWeight.w600 : FontWeight.normal,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 ),
               ),
             ),

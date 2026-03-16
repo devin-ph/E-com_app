@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/category.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
+import '../utils/product_localization.dart';
 
 class ProductProvider extends ChangeNotifier {
   final ApiService _api = ApiService();
@@ -23,7 +24,7 @@ class ProductProvider extends ChangeNotifier {
       return _products;
     }
     return _products
-        .where((product) => product.title.toLowerCase().contains(query))
+        .where((product) => localizedProductSearchText(product).contains(query))
         .toList();
   }
 

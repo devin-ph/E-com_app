@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../models/product.dart';
 import '../utils/formatters.dart';
+import '../utils/product_localization.dart';
 import '../utils/product_navigation_cache.dart';
 
 class ProductCard extends StatelessWidget {
@@ -20,7 +21,7 @@ class ProductCard extends StatelessWidget {
   List<_CardTag> _buildTags() {
     final tags = <_CardTag>[
       const _CardTag(
-        label: 'Mall',
+        label: 'Chính hãng',
         background: Color(0xFFEE4D2D),
         foreground: Colors.white,
       ),
@@ -72,10 +73,8 @@ class ProductCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
-                  
                 top: Radius.circular(18),
-              
-                ),
+              ),
               child: Stack(
                 children: [
                   Hero(
@@ -196,7 +195,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    product.title,
+                    localizedProductTitle(product),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(

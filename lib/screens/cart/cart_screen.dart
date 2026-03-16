@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../providers/cart_provider.dart';
 import '../../models/cart_item.dart';
 import '../../utils/formatters.dart';
+import '../../utils/product_localization.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -16,7 +17,9 @@ class CartScreen extends StatelessWidget {
           builder: (context, cart, _) => Text(
             'Giỏ hàng (${cart.itemCount})',
             style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         actions: [
@@ -36,8 +39,11 @@ class CartScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.shopping_cart_outlined,
-                      size: 80, color: Colors.grey),
+                  const Icon(
+                    Icons.shopping_cart_outlined,
+                    size: 80,
+                    color: Colors.grey,
+                  ),
                   const SizedBox(height: 16),
                   const Text(
                     'Giỏ hàng của bạn đang trống',
@@ -49,8 +55,10 @@ class CartScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFEE4D2D),
                     ),
-                    child: const Text('Tiếp tục mua sắm',
-                        style: TextStyle(color: Colors.white)),
+                    child: const Text(
+                      'Tiếp tục mua sắm',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -108,23 +116,28 @@ class _CartItemTile extends StatelessWidget {
       ),
       confirmDismiss: (direction) async {
         return await showDialog<bool>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Xóa sản phẩm'),
-            content: const Text('Bạn có muốn xóa sản phẩm này khỏi giỏ hàng không?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Hủy'),
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Xóa sản phẩm'),
+                content: const Text(
+                  'Bạn có muốn xóa sản phẩm này khỏi giỏ hàng không?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, false),
+                    child: const Text('Hủy'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(ctx, true),
+                    child: const Text(
+                      'Xóa',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
               ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Xóa',
-                    style: TextStyle(color: Colors.red)),
-              ),
-            ],
-          ),
-        ) ?? false;
+            ) ??
+            false;
       },
       onDismissed: (_) => cart.removeItem(item.key),
       child: Container(
@@ -149,8 +162,7 @@ class _CartItemTile extends StatelessWidget {
               child: Checkbox(
                 value: item.isChecked,
                 activeColor: const Color(0xFFEE4D2D),
-                onChanged: (value) =>
-                    cart.toggleItem(item.key, value ?? false),
+                onChanged: (value) => cart.toggleItem(item.key, value ?? false),
               ),
             ),
             // Product image
@@ -169,9 +181,10 @@ class _CartItemTile extends StatelessWidget {
                     color: Colors.grey.shade200,
                   ),
                   errorWidget: (_, _, _) => const Icon(
-                      Icons.broken_image_outlined,
-                      size: 40,
-                      color: Colors.grey),
+                    Icons.broken_image_outlined,
+                    size: 40,
+                    color: Colors.grey,
+                  ),
                 ),
               ),
             ),
@@ -183,11 +196,13 @@ class _CartItemTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      item.product.title,
+                      localizedProductTitle(item.product),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontSize: 13, fontWeight: FontWeight.w500),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     // Variation tags
@@ -239,8 +254,10 @@ class _Tag extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
         border: Border.all(color: Colors.grey.shade300),
       ),
-      child: Text(label,
-          style: const TextStyle(fontSize: 11, color: Colors.black54)),
+      child: Text(
+        label,
+        style: const TextStyle(fontSize: 11, color: Colors.black54),
+      ),
     );
   }
 }
@@ -265,15 +282,20 @@ class _QuantityControl extends StatelessWidget {
                 builder: (ctx) => AlertDialog(
                   title: const Text('Xóa sản phẩm'),
                   content: const Text(
-                      'Số lượng về 0. Bạn có muốn xóa sản phẩm không?'),
+                    'Số lượng về 0. Bạn có muốn xóa sản phẩm không?',
+                  ),
                   actions: [
                     TextButton(
-                        onPressed: () => Navigator.pop(ctx, false),
-                        child: const Text('Hủy')),
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text('Hủy'),
+                    ),
                     TextButton(
-                        onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text('Xóa',
-                            style: TextStyle(color: Colors.red))),
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text(
+                        'Xóa',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -285,9 +307,10 @@ class _QuantityControl extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text('${item.quantity}',
-              style: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.bold)),
+          child: Text(
+            '${item.quantity}',
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          ),
         ),
         _SmallBtn(
           icon: Icons.add,
@@ -339,8 +362,7 @@ class _CartBottomBar extends StatelessWidget {
           ),
           child: SafeArea(
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
                 children: [
                   // Select all checkbox
@@ -348,20 +370,19 @@ class _CartBottomBar extends StatelessWidget {
                     value: cart.allChecked,
                     tristate: false,
                     activeColor: const Color(0xFFEE4D2D),
-                    onChanged: (value) =>
-                        cart.toggleSelectAll(value ?? false),
+                    onChanged: (value) => cart.toggleSelectAll(value ?? false),
                   ),
-                  const Text('Chọn tất cả',
-                      style: TextStyle(fontSize: 13)),
+                  const Text('Chọn tất cả', style: TextStyle(fontSize: 13)),
                   const Spacer(),
                   // Total
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('Tổng thanh toán:',
-                          style: TextStyle(
-                              fontSize: 11, color: Colors.grey)),
+                      const Text(
+                        'Tổng thanh toán:',
+                        style: TextStyle(fontSize: 11, color: Colors.grey),
+                      ),
                       Text(
                         Formatters.currency(cart.totalPrice),
                         style: const TextStyle(
@@ -388,15 +409,19 @@ class _CartBottomBar extends StatelessWidget {
                       backgroundColor: const Color(0xFFEE4D2D),
                       disabledBackgroundColor: Colors.grey.shade300,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                     ),
                     child: Text(
                       'Thanh toán (${cart.checkedItems.length})',
                       style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

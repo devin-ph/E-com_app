@@ -4,7 +4,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../models/product.dart';
 import '../../../utils/formatters.dart';
-import '../../../widgets/cart_icon_button.dart';
+import '../../../utils/product_localization.dart';
 import 'widgets/add_to_cart_bottom_sheet.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -20,85 +20,153 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool _expandedDescription = false;
 
   static const Map<String, String> _categoryLabelsVi = {
-    'jewelery': 'Trang sức',
-    "men's clothing": 'Quần áo nam',
-    "women's clothing": 'Quần áo nữ',
-    'electronics': 'Đồ điện tử',
     'beauty': 'Mỹ phẩm',
-  };
-
-  static const Map<int, String> _titleViById = {
-    1: 'Ba lô du lịch thời trang',
-    2: 'Áo thun nam cao cấp',
-    3: 'Áo khoác nam Urban Fit',
-    4: 'Áo sơ mi nam kiểu dáng thanh lịch',
-    5: 'Vòng tay nữ tinh tế',
-    6: 'Nhẫn kim cương thanh lịch',
-    7: 'Nhẫn vàng đính đá cao cấp',
-    8: 'Khuyên tai nữ thời trang',
-    9: 'Ổ cứng di động dung lượng lớn',
-    10: 'Ổ SSD hiệu năng cao',
-    11: 'Loa Bluetooth mini tiện dụng',
-    12: 'Màn hình gaming chất lượng cao',
-    13: 'Áo khoác nữ dáng ngắn',
-    14: 'Áo khoác nữ chống gió',
-    15: 'Áo khoác nữ mùa đông',
-    16: 'Áo thun nữ basic',
-    17: 'Áo thun nữ phong cách trẻ',
-    18: 'Áo thun nữ năng động',
-    19: 'Áo khoác nữ thời trang',
-    20: 'Áo khoác nữ cao cấp',
-  };
-
-  static const Map<int, String> _descriptionViById = {
-    1: 'Ba lô đa năng phù hợp cho đi học, đi làm và du lịch ngắn ngày. Thiết kế gọn nhẹ, ngăn chứa rộng rãi và đệm lưng êm ái.',
-    2: 'Áo thun nam chất liệu mềm mại, thoáng mát, phù hợp mặc hằng ngày. Kiểu dáng đơn giản, dễ phối đồ.',
-    3: 'Áo khoác nam Urban Fit giữ ấm vừa phải, thiết kế hiện đại và dễ phối cùng quần jean hoặc kaki.',
-    4: 'Áo sơ mi nam thanh lịch, chất vải mềm, đứng form tốt. Phù hợp mặc đi làm hoặc dự sự kiện.',
-    5: 'Vòng tay nữ thiết kế tinh tế, nhẹ tay và dễ kết hợp cùng nhiều phong cách thời trang.',
-    6: 'Nhẫn đính đá thiết kế tối giản, tôn vẻ thanh lịch và sang trọng khi sử dụng hằng ngày hoặc dự tiệc.',
-    7: 'Nhẫn vàng cao cấp với đường nét tinh xảo, phù hợp làm quà tặng hoặc sử dụng trong các dịp đặc biệt.',
-    8: 'Khuyên tai nữ phong cách hiện đại, mang lại điểm nhấn nổi bật cho tổng thể trang phục.',
-    9: 'Ổ cứng di động dung lượng lớn, truyền dữ liệu ổn định và tiện lợi cho nhu cầu sao lưu hằng ngày.',
-    10: 'Ổ SSD tốc độ cao giúp khởi động máy nhanh, tăng hiệu suất làm việc và xử lý dữ liệu mượt mà.',
-    11: 'Loa Bluetooth nhỏ gọn, kết nối nhanh, âm thanh rõ ràng, phù hợp mang theo khi di chuyển.',
-    12: 'Màn hình gaming hiển thị sắc nét, tần số quét cao, mang lại trải nghiệm chơi game mượt mà.',
-    13: 'Áo khoác nữ dáng ngắn trẻ trung, chất liệu mềm nhẹ, phù hợp sử dụng trong thời tiết mát lạnh.',
-    14: 'Áo khoác nữ chống gió, thiết kế tiện dụng và thoải mái, thích hợp cho hoạt động ngoài trời.',
-    15: 'Áo khoác nữ mùa đông giữ ấm tốt, form dáng đẹp và dễ phối với nhiều loại trang phục.',
-    16: 'Áo thun nữ basic với chất vải co giãn nhẹ, mềm mại và thoáng khí cho cảm giác dễ chịu cả ngày.',
-    17: 'Áo thun nữ phong cách trẻ, đường may chắc chắn, phù hợp đi học, đi chơi hoặc dạo phố.',
-    18: 'Áo thun nữ năng động, màu sắc hài hòa, phù hợp phối cùng quần jean hoặc chân váy.',
-    19: 'Áo khoác nữ thời trang với thiết kế hiện đại, giúp giữ ấm nhẹ và tôn dáng khi mặc.',
-    20: 'Áo khoác nữ cao cấp, chất liệu bền đẹp, mang lại cảm giác thoải mái và sang trọng.',
+    'fragrances': 'Nước hoa',
+    'furniture': 'Nội thất',
+    'groceries': 'Tạp hóa',
+    'home-decoration': 'Trang trí nhà',
+    'kitchen-accessories': 'Phụ kiện bếp',
+    'laptops': 'Laptop',
+    'mens-shirts': 'Áo nam',
+    'mens-shoes': 'Giày nam',
+    'mens-watches': 'Đồng hồ nam',
+    'mobile-accessories': 'Phụ kiện mobile',
+    'motorcycle': 'Xe máy',
+    'skin-care': 'Chăm sóc da',
+    'smartphones': 'Điện thoại',
+    'sports-accessories': 'Phụ kiện thể thao',
+    'sunglasses': 'Kính mát',
+    'tablets': 'Máy tính bảng',
+    'tops': 'Áo nữ',
+    'vehicle': 'Xe cộ',
+    'womens-bags': 'Túi nữ',
+    'womens-dresses': 'Đầm nữ',
+    'womens-jewellery': 'Trang sức nữ',
+    'womens-shoes': 'Giày nữ',
+    'womens-watches': 'Đồng hồ nữ',
   };
 
   // Extensible category-based metadata templates (JSON-like map).
   static const Map<String, Map<String, String>> _categorySpecTemplates = {
-    'jewelery': {
-      'Chất liệu': 'Hợp kim cao cấp',
-      'Phong cách': 'Tinh tế, sang trọng',
-      'Đối tượng': 'Nam/Nữ',
-    },
-    "men's clothing": {
-      'Chất liệu': 'Vải mềm, thoáng',
-      'Kiểu dáng': 'Cơ bản, dễ phối',
-      'Mùa phù hợp': 'Quanh năm',
-    },
-    "women's clothing": {
-      'Chất liệu': 'Vải mềm nhẹ',
-      'Kiểu dáng': 'Thanh lịch',
-      'Mùa phù hợp': 'Xuân - Hè',
-    },
-    'electronics': {
-      'Bảo hành': '12 tháng',
-      'Nguồn điện': 'AC 220V',
-      'Tính năng': 'Hiệu năng ổn định',
-    },
     'beauty': {
       'Loại da': 'Mọi loại da',
       'Hạn sử dụng': '24 tháng',
       'Xuất xứ': 'Nhập khẩu',
+    },
+    'fragrances': {
+      'Dung tích': '50–100 ml',
+      'Hương thơm': 'Nhẹ nhàng, lưu hương lâu',
+      'Đối tượng': 'Nam/Nữ',
+    },
+    'furniture': {
+      'Chất liệu': 'Gỗ cao cấp',
+      'Phong cách': 'Hiện đại',
+      'Bảo hành': '12 tháng',
+    },
+    'groceries': {
+      'Xuất xứ': 'Trong nước',
+      'Bảo quản': 'Nơi khô ráo, thoáng mát',
+      'Hạn sử dụng': 'Xem trên bao bì',
+    },
+    'home-decoration': {
+      'Chất liệu': 'Hỗn hợp cao cấp',
+      'Phong cách': 'Trang nhã',
+      'Phù hợp': 'Mọi không gian',
+    },
+    'kitchen-accessories': {
+      'Chất liệu': 'Inox/Nhựa cao cấp',
+      'An toàn': 'Không chứa BPA',
+      'Bảo hành': '6 tháng',
+    },
+    'laptops': {
+      'Bảo hành': '12 tháng',
+      'Hệ điều hành': 'Windows/macOS',
+      'Tính năng': 'Hiệu năng cao',
+    },
+    'mens-shirts': {
+      'Chất liệu': 'Vải mềm, thoáng',
+      'Kiểu dáng': 'Cơ bản, dễ phối',
+      'Mùa phù hợp': 'Quanh năm',
+    },
+    'mens-shoes': {
+      'Chất liệu': 'Da/Vải cao cấp',
+      'Đế giày': 'Đế cao su chống trượt',
+      'Phong cách': 'Năng động',
+    },
+    'mens-watches': {
+      'Chất liệu': 'Thép không gỉ',
+      'Kính': 'Kính sapphire',
+      'Chống nước': '30m',
+    },
+    'mobile-accessories': {
+      'Tương thích': 'Đa dòng máy',
+      'Bảo hành': '6 tháng',
+      'Chất liệu': 'Cao cấp',
+    },
+    'motorcycle': {
+      'Bảo hành': '24 tháng',
+      'Nhiên liệu': 'Xăng',
+      'Tiêu chuẩn khí thải': 'Euro 4',
+    },
+    'skin-care': {
+      'Loại da': 'Mọi loại da',
+      'Hạn sử dụng': '24 tháng',
+      'Thành phần': 'Tự nhiên',
+    },
+    'smartphones': {
+      'Bảo hành': '12 tháng',
+      'Hệ điều hành': 'Android/iOS',
+      'Kết nối': '5G/4G',
+    },
+    'sports-accessories': {
+      'Chất liệu': 'Bền, nhẹ',
+      'Phù hợp': 'Mọi hoạt động thể thao',
+      'Bảo hành': '6 tháng',
+    },
+    'sunglasses': {
+      'Chất liệu gọng': 'Kim loại/Nhựa',
+      'Tròng kính': 'Chống tia UV400',
+      'Phong cách': 'Thời trang',
+    },
+    'tablets': {
+      'Bảo hành': '12 tháng',
+      'Hệ điều hành': 'Android/iPadOS',
+      'Kết nối': 'Wi-Fi/4G',
+    },
+    'tops': {
+      'Chất liệu': 'Vải mềm nhẹ',
+      'Kiểu dáng': 'Thanh lịch',
+      'Mùa phù hợp': 'Xuân - Hè',
+    },
+    'vehicle': {
+      'Bảo hành': '24 tháng',
+      'Nhiên liệu': 'Xăng/Điện',
+      'Tiêu chuẩn': 'Euro 4',
+    },
+    'womens-bags': {
+      'Chất liệu': 'Da tổng hợp cao cấp',
+      'Phong cách': 'Thời trang',
+      'Màu sắc': 'Đa dạng',
+    },
+    'womens-dresses': {
+      'Chất liệu': 'Vải mềm nhẹ',
+      'Kiểu dáng': 'Thanh lịch',
+      'Mùa phù hợp': 'Xuân - Hè',
+    },
+    'womens-jewellery': {
+      'Chất liệu': 'Hợp kim cao cấp',
+      'Phong cách': 'Tinh tế, sang trọng',
+      'Đối tượng': 'Nữ',
+    },
+    'womens-shoes': {
+      'Chất liệu': 'Da/Vải cao cấp',
+      'Đế giày': 'Đế cao su chống trượt',
+      'Phong cách': 'Thanh lịch',
+    },
+    'womens-watches': {
+      'Chất liệu': 'Thép không gỉ',
+      'Kính': 'Kính sapphire',
+      'Chống nước': '30m',
     },
   };
 
@@ -137,7 +205,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           'Chi tiết sản phẩm',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
-        actions: const [CartIconButton(iconColor: Colors.black87)],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -337,33 +404,286 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   String _localizedTitle(Product product) {
-    final mapped = _titleViById[product.id];
-    if (mapped != null) return mapped;
-    return _capitalizeWords(product.title);
+    return _titleViById[product.id] ?? _localizedCategory(product.category);
   }
 
   String _localizedDescription(Product product) {
-    final mapped = _descriptionViById[product.id];
-    if (mapped != null) return mapped;
-    return _defaultDescriptionByCategory(product.category);
+    final key = product.category.toLowerCase().trim();
+    return _categoryDescriptionVi[key] ??
+        'Sản phẩm chất lượng tốt, thiết kế đẹp và phù hợp nhiều nhu cầu sử dụng khác nhau.';
   }
 
-  String _defaultDescriptionByCategory(String category) {
-    final key = category.toLowerCase().trim();
-    switch (key) {
-      case 'jewelery':
-        return 'Sản phẩm trang sức thiết kế tinh tế, phù hợp sử dụng hằng ngày hoặc trong các dịp đặc biệt.';
-      case "men's clothing":
-      case "women's clothing":
-        return 'Sản phẩm thời trang có chất liệu thoải mái, kiểu dáng hiện đại và dễ phối với nhiều trang phục.';
-      case 'electronics':
-        return 'Sản phẩm điện tử có hiệu năng ổn định, đáp ứng tốt nhu cầu sử dụng hằng ngày.';
-      case 'beauty':
-        return 'Sản phẩm mỹ phẩm an toàn, phù hợp nhiều loại da và thuận tiện cho chu trình chăm sóc hằng ngày.';
-      default:
-        return 'Sản phẩm chất lượng tốt, thiết kế đẹp và phù hợp với nhiều nhu cầu sử dụng khác nhau.';
-    }
-  }
+  static const Map<int, String> _titleViById = {
+    // Mỹ phẩm (1-5)
+    1: 'Mascara tạo mi Essence Lash Princess',
+    2: 'Bảng phấn mắt 16 ô kèm gương',
+    3: 'Phấn phủ dạng hộp tiện dụng',
+    4: 'Son môi đỏ quyến rũ',
+    5: 'Sơn móng tay màu đỏ',
+    // Nước hoa (6-10)
+    6: 'Nước hoa Calvin Klein CK One',
+    7: 'Nước hoa Chanel Coco Noir',
+    8: 'Nước hoa Dior J\'adore',
+    9: 'Nước hoa Dolce Shine',
+    10: 'Nước hoa Gucci Bloom',
+    // Nội thất (11-15)
+    11: 'Giường ngủ đôi Annibale Colombo cao cấp',
+    12: 'Ghế sofa Annibale Colombo',
+    13: 'Tủ đầu giường gỗ anh đào châu Phi',
+    14: 'Ghế hội nghị điều hành Knoll Saarinen',
+    15: 'Chậu rửa mặt gỗ có gương treo tường',
+    // Tạp hóa (16-42)
+    16: 'Táo tươi nhập khẩu',
+    17: 'Thịt bò bít-tết tươi',
+    18: 'Thức ăn cho mèo Cat Food',
+    19: 'Thịt gà tươi sạch',
+    20: 'Dầu ăn thực vật tinh luyện',
+    21: 'Dưa chuột tươi',
+    22: 'Thức ăn cho chó Pedigree',
+    23: 'Trứng gà tươi sạch',
+    24: 'Cá phi lê tươi',
+    25: 'Ớt chuông xanh tươi',
+    26: 'Ớt xanh tươi',
+    27: 'Mật ong rừng nguyên chất',
+    28: 'Kem que mát lạnh',
+    29: 'Nước ép trái cây tươi',
+    30: 'Kiwi tươi nhập khẩu',
+    31: 'Chanh tươi',
+    32: 'Sữa tươi tiệt trùng',
+    33: 'Dâu tằm tươi',
+    34: 'Cà phê Nescafé hòa tan',
+    35: 'Khoai tây tươi',
+    36: 'Bột Protein thể hình',
+    37: 'Hành tây đỏ tươi',
+    38: 'Gạo trắng hạt dài',
+    39: 'Nước ngọt có ga',
+    40: 'Dâu tây tươi',
+    41: 'Hộp khăn giấy tiện dụng',
+    42: 'Nước uống tinh khiết',
+    // Trang trí nhà (43-47)
+    43: 'Xích đu trang trí phòng khách',
+    44: 'Khung ảnh cây gia đình',
+    45: 'Cây trang trí để nhà',
+    46: 'Chậu cây xanh trang trí',
+    47: 'Đèn bàn trang trí nội thất',
+    // Phụ kiện bếp (48-77)
+    48: 'Thìa xới cơm gỗ tre tự nhiên',
+    49: 'Cốc nhôm cao cấp màu đen',
+    50: 'Dụng cụ đánh trứng màu đen',
+    51: 'Máy xay sinh tố để bàn',
+    52: 'Chảo thép carbon chịu nhiệt',
+    53: 'Thớt cắt thực phẩm đa năng',
+    54: 'Dụng cụ vắt cam chanh màu vàng',
+    55: 'Dụng cụ thái trứng tiện dụng',
+    56: 'Bếp điện gia đình đa năng',
+    57: 'Rây lọc mịn nhuyễn',
+    58: 'Nĩa dùng bữa đa năng',
+    59: 'Ly thủy tinh cao cấp',
+    60: 'Dụng cụ bào thực phẩm màu đen',
+    61: 'Máy xay cầm tay đa tốc độ',
+    62: 'Khay làm đá viên',
+    63: 'Rây bếp đa năng',
+    64: 'Dao bếp cao cấp chống gỉ',
+    65: 'Hộp cơm giữ nhiệt tiện lợi',
+    66: 'Lò vi sóng gia đình đa năng',
+    67: 'Giá treo cốc gỗ',
+    68: 'Chảo chiên chống dính',
+    69: 'Đĩa ăn sứ cao cấp',
+    70: 'Kẹp gắp thực phẩm màu đỏ',
+    71: 'Nồi inox nắp kính trong suốt',
+    72: 'Xẻng lật thức ăn',
+    73: 'Kệ đựng gia vị bếp',
+    74: 'Muỗng/Thìa ăn',
+    75: 'Khay phục vụ đa năng',
+    76: 'Cây cán bột gỗ',
+    77: 'Dụng cụ gọt vỏ màu vàng',
+    // Laptop (78-82)
+    78: 'Laptop Apple MacBook Pro 14 inch',
+    79: 'Laptop Asus Zenbook Pro hai màn hình',
+    80: 'Laptop Huawei Matebook X Pro',
+    81: 'Laptop Lenovo Yoga 920 dạng gập',
+    82: 'Laptop Dell XPS 13 mỏng nhẹ cao cấp',
+    // Áo nam (83-87)
+    83: 'Áo sơ mi nam kẻ xanh đen',
+    84: 'Áo thun nam Gigabyte Aorus gaming',
+    85: 'Áo sơ mi nam kẻ caro',
+    86: 'Áo sơ mi nam tay ngắn',
+    87: 'Áo sơ mi nam kẻ ô vuông',
+    // Giày nam (88-92)
+    88: 'Giày Nike Air Jordan 1 đỏ đen',
+    89: 'Giày bóng chày Nike nam',
+    90: 'Giày thể thao Puma Future Rider',
+    91: 'Giày sneaker trắng đỏ thời trang',
+    92: 'Giày sneaker thể thao trắng đỏ',
+    // Đồng hồ nam (93-98)
+    93: 'Đồng hồ nam dây da nâu',
+    94: 'Đồng hồ cơ Longines Master Collection',
+    95: 'Đồng hồ Rolex Cellini mặt đen',
+    96: 'Đồng hồ Rolex Cellini Moonphase',
+    97: 'Đồng hồ Rolex Datejust cao cấp',
+    98: 'Đồng hồ lặn Rolex Submariner',
+    // Phụ kiện mobile (99-112)
+    99: 'Loa thông minh Amazon Echo Plus',
+    100: 'Tai nghe không dây Apple AirPods',
+    101: 'Tai nghe chụp tai Apple AirPods Max',
+    102: 'Sạc không dây Apple Airpower',
+    103: 'Loa thông minh Apple HomePod Mini',
+    104: 'Cáp sạc iPhone chính hãng',
+    105: 'Pin dự phòng không dây Apple MagSafe',
+    106: 'Đồng hồ Apple Watch Series 4 vàng',
+    107: 'Tai nghe không dây Beats Flex',
+    108: 'Ốp lưng silicone iPhone 12 màu tím',
+    109: 'Gậy chụp ảnh Monopod',
+    110: 'Đèn selfie kẹp điện thoại',
+    111: 'Gậy selfie đa năng',
+    112: 'Chân đế camera studio chuyên dụng',
+    // Xe máy (113-117)
+    113: 'Xe máy đa năng tiện dụng',
+    114: 'Xe mô tô Kawasaki Z800',
+    115: 'Xe mô tô thể thao MotoGP',
+    116: 'Xe tay ga tiện dụng',
+    117: 'Xe mô tô thể thao',
+    // Chăm sóc da (118-120)
+    118: 'Xà phòng rửa tay Attitude Super Leaves',
+    119: 'Sữa tắm dưỡng ẩm Olay Shea Butter',
+    120: 'Kem dưỡng thể và mặt Vaseline Men',
+    // Điện thoại (121-136)
+    121: 'Điện thoại iPhone 5s',
+    122: 'Điện thoại iPhone 6',
+    123: 'Điện thoại iPhone 13 Pro',
+    124: 'Điện thoại iPhone X',
+    125: 'Điện thoại Oppo A57',
+    126: 'Điện thoại Oppo F19 Pro Plus',
+    127: 'Điện thoại Oppo K1',
+    128: 'Điện thoại Realme C35',
+    129: 'Điện thoại Realme X',
+    130: 'Điện thoại Realme XT',
+    131: 'Điện thoại Samsung Galaxy S7',
+    132: 'Điện thoại Samsung Galaxy S8',
+    133: 'Điện thoại Samsung Galaxy S10',
+    134: 'Điện thoại Vivo S1',
+    135: 'Điện thoại Vivo V9',
+    136: 'Điện thoại Vivo X21',
+    // Phụ kiện thể thao (137-153)
+    137: 'Bóng bầu dục Mỹ',
+    138: 'Bóng chày',
+    139: 'Găng tay bóng chày',
+    140: 'Bóng rổ cao cấp',
+    141: 'Vành rổ bóng rổ',
+    142: 'Bóng cricket',
+    143: 'Gậy đánh bóng cricket',
+    144: 'Mũ bảo hiểm cricket',
+    145: 'Khung cổng cricket',
+    146: 'Cầu lông vũ',
+    147: 'Bóng đá chính hãng',
+    148: 'Bóng golf',
+    149: 'Gậy golf sắt',
+    150: 'Gậy bóng chày kim loại',
+    151: 'Bóng tennis',
+    152: 'Vợt tennis cao cấp',
+    153: 'Bóng chuyền cao cấp',
+    // Kính mát (154-158)
+    154: 'Kính mát đen phong cách',
+    155: 'Kính mát cổ điển thời trang',
+    156: 'Kính mát xanh đen nổi bật',
+    157: 'Kính mát dự tiệc',
+    158: 'Kính mát phong cách đường phố',
+    // Máy tính bảng (159-161)
+    159: 'Máy tính bảng iPad Mini 2021',
+    160: 'Máy tính bảng Samsung Galaxy Tab S8 Plus',
+    161: 'Máy tính bảng Samsung Galaxy Tab trắng',
+    // Áo nữ / Đầm ngắn (162-166)
+    162: 'Đầm tay ngắn màu xanh',
+    163: 'Đầm mùa hè nữ',
+    164: 'Đầm màu xám thời trang',
+    165: 'Đầm ngắn dễ thương',
+    166: 'Đầm kẻ caro thời trang',
+    // Xe cộ (167-171)
+    167: 'Xe Chrysler 300 Touring',
+    168: 'Xe Dodge Charger SXT',
+    169: 'Xe SUV Dodge Hornet GT Plus',
+    170: 'Xe SUV Dodge Durango SXT',
+    171: 'Xe MPV Chrysler Pacifica Touring',
+    // Túi nữ (172-176)
+    172: 'Túi xách nữ màu xanh da trời',
+    173: 'Túi da nữ Heshe cao cấp',
+    174: 'Túi xách nữ Prada',
+    175: 'Balo nữ da PU màu trắng',
+    176: 'Túi xách nữ màu đen thanh lịch',
+    // Đầm nữ (177-181)
+    177: 'Đầm dạ hội nữ màu đen',
+    178: 'Áo corset da kèm chân váy',
+    179: 'Áo corset kèm chân váy đen',
+    180: 'Đầm nữ họa tiết hạt đậu',
+    181: 'Bộ vest đỏ đen Marni',
+    // Trang sức nữ (182-184)
+    182: 'Khuyên tai đá pha lê xanh',
+    183: 'Bông tai elip xanh thời trang',
+    184: 'Bông tai chủ đề nhiệt đới',
+    // Giày nữ (185-189)
+    185: 'Dép nữ đen nâu thoải mái',
+    186: 'Giày cao gót Calvin Klein',
+    187: 'Giày nữ màu vàng thời trang',
+    188: 'Giày nữ Pampi phong cách',
+    189: 'Giày nữ màu đỏ quyến rũ',
+    // Đồng hồ nữ (190-194)
+    190: 'Đồng hồ nữ IWC Ingenieur tự động thép',
+    191: 'Đồng hồ nữ Rolex Cellini Moonphase',
+    192: 'Đồng hồ nữ Rolex Datejust',
+    193: 'Đồng hồ nữ mạ vàng sang trọng',
+    194: 'Đồng hồ đeo tay nữ thời trang',
+  };
+
+  static const Map<String, String> _categoryDescriptionVi = {
+    'beauty':
+        'Sản phẩm làm đẹp chất lượng cao giúp tôn lên vẻ đẹp tự nhiên, an toàn cho da, phù hợp sử dụng hằng ngày.',
+    'fragrances':
+        'Nước hoa hương thơm lưu lâu, quyến rũ và sang trọng, phù hợp cho mọi dịp.',
+    'furniture':
+        'Nội thất cao cấp với thiết kế sang trọng, chất liệu bền bỉ, mang lại không gian sống đẳng cấp.',
+    'groceries':
+        'Thực phẩm tươi sạch, đảm bảo vệ sinh an toàn thực phẩm, được chọn lọc kỹ lưỡng cho sức khỏe cả gia đình.',
+    'home-decoration':
+        'Vật trang trí nội thất đẹp mắt, giúp không gian sống thêm ấm cúng và cá tính.',
+    'kitchen-accessories':
+        'Dụng cụ nhà bếp tiện dụng, chất liệu an toàn, giúp việc nấu ăn trở nên dễ dàng và thú vị hơn.',
+    'laptops':
+        'Laptop hiệu năng cao, thiết kế mỏng nhẹ, đáp ứng tốt nhu cầu làm việc, học tập và giải trí.',
+    'mens-shirts':
+        'Áo nam chất liệu mềm mại, thoáng khí, kiểu dáng hiện đại và dễ phối đồ.',
+    'mens-shoes':
+        'Giày nam thiết kế thời trang, đế êm ái, phù hợp cho nhiều hoạt động khác nhau.',
+    'mens-watches':
+        'Đồng hồ nam thiết kế tinh tế, chính xác cao, tôn lên phong cách sang trọng.',
+    'mobile-accessories':
+        'Phụ kiện điện thoại chất lượng cao, bảo vệ thiết bị và nâng cao trải nghiệm sử dụng.',
+    'motorcycle':
+        'Xe/phụ kiện xe máy cao cấp, bền bỉ, đảm bảo an toàn khi lái xe.',
+    'skin-care':
+        'Sản phẩm chăm sóc da từ thiên nhiên, dưỡng ẩm và bảo vệ da hiệu quả, an toàn cho mọi loại da.',
+    'smartphones':
+        'Điện thoại thông minh cấu hình mạnh, camera sắc nét, pin bền, màn hình đẹp.',
+    'sports-accessories':
+        'Dụng cụ thể thao chất lượng cao, bền chắc, phù hợp cho nhiều môn thể thao.',
+    'sunglasses':
+        'Kính mát thời trang, chống tia UV400, bảo vệ mắt và tôn lên phong cách.',
+    'tablets':
+        'Máy tính bảng hiển thị sắc nét, hiệu năng mượt mà, phù hợp học tập và giải trí.',
+    'tops':
+        'Áo/đầm nữ thiết kế thời trang, chất liệu mềm nhẹ, phù hợp nhiều dịp khác nhau.',
+    'vehicle':
+        'Xe hơi thiết kế hiện đại, nội thất tiện nghi, vận hành êm ái và an toàn.',
+    'womens-bags':
+        'Túi nữ thiết kế sang trọng, chất liệu cao cấp, phù hợp nhiều phong cách thời trang.',
+    'womens-dresses':
+        'Váy/đầm nữ thiết kế thanh lịch, chất vải mềm nhẹ, tôn dáng và phù hợp nhiều dịp.',
+    'womens-jewellery':
+        'Trang sức nữ thiết kế tinh xảo, sang trọng, phù hợp sử dụng hằng ngày và dịp đặc biệt.',
+    'womens-shoes':
+        'Giày nữ thiết kế thời trang, êm ái, tôn dáng và phù hợp nhiều phong cách.',
+    'womens-watches':
+        'Đồng hồ nữ thiết kế nữ tính, sang trọng, phù hợp với phong cách hiện đại.',
+  };
 
   String _capitalizeWords(String value) {
     return value
@@ -460,6 +780,15 @@ class _InlineActionBar extends StatelessWidget {
 
   const _InlineActionBar({required this.product});
 
+  void _openChatSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _ProductChatSheet(product: product),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -478,21 +807,14 @@ class _InlineActionBar extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.chat_bubble_outline),
-                    onPressed: () {},
-                    color: Colors.grey.shade700,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.shopping_cart_outlined),
-                    onPressed: () => Navigator.pushNamed(context, '/cart'),
-                    color: Colors.grey.shade700,
-                  ),
-                ],
+              width: 84,
+              child: Center(
+                child: IconButton(
+                  icon: const Icon(Icons.chat_bubble_outline),
+                  onPressed: () => _openChatSheet(context),
+                  color: Colors.grey.shade700,
+                  tooltip: 'Chat với shop',
+                ),
               ),
             ),
             const VerticalDivider(width: 1),
@@ -548,6 +870,260 @@ class _InlineActionBar extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ProductChatSheet extends StatefulWidget {
+  final Product product;
+
+  const _ProductChatSheet({required this.product});
+
+  @override
+  State<_ProductChatSheet> createState() => _ProductChatSheetState();
+}
+
+class _ProductChatSheetState extends State<_ProductChatSheet> {
+  static const List<String> _quickQuestions = [
+    'Sản phẩm có còn hàng?',
+    'Sản phẩm có giá bao nhiêu?',
+    'Sản phẩm có giao nhanh không?',
+    'Sản phẩm có được kiểm hàng không?',
+  ];
+
+  final TextEditingController _messageController = TextEditingController();
+  final FocusNode _messageFocusNode = FocusNode();
+  final List<_ChatMessage> _messages = [
+    _ChatMessage(
+      sender: _ChatSender.shop,
+      text: 'Xin chào, shop có thể hỗ trợ gì cho bạn về sản phẩm này?',
+    ),
+  ];
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _messageFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _prefillMessage(String text) {
+    _messageController
+      ..text = text
+      ..selection = TextSelection.collapsed(offset: text.length);
+    _messageFocusNode.requestFocus();
+  }
+
+  void _sendMessage(String text) {
+    final message = text.trim();
+    if (message.isEmpty) return;
+
+    setState(() {
+      _messages.add(_ChatMessage(sender: _ChatSender.user, text: message));
+      _messages.add(
+        _ChatMessage(sender: _ChatSender.shop, text: _buildAutoReply(message)),
+      );
+    });
+
+    _messageController.clear();
+  }
+
+  String _buildAutoReply(String message) {
+    final normalized = message.toLowerCase();
+    if (normalized.contains('còn hàng')) {
+      return 'Dạ còn bạn nhé. Shop hiện vẫn đang có sẵn sản phẩm này.';
+    }
+    if (normalized.contains('giá')) {
+      return 'Dạ giá hiện tại của sản phẩm là ${Formatters.currency(widget.product.price)}.';
+    }
+    if (normalized.contains('giao nhanh')) {
+      return 'Dạ shop có hỗ trợ giao nhanh tùy khu vực. Bạn đặt hàng sớm để shop xử lý ngay.';
+    }
+    if (normalized.contains('kiểm hàng')) {
+      return 'Dạ bạn có thể kiểm tra ngoại quan sản phẩm theo chính sách của đơn vị vận chuyển.';
+    }
+    return 'Dạ shop đã nhận được tin nhắn. Shop sẽ phản hồi chi tiết cho bạn sớm nhất.';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: EdgeInsets.fromLTRB(16, 14, 16, bottomInset + 16),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 44,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(999),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 22,
+                  backgroundColor: const Color(0xFFFFF0EC),
+                  child: Icon(
+                    Icons.storefront_outlined,
+                    color: Colors.orange.shade700,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Chat với shop',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Hỏi nhanh về: ${localizedProductTitle(widget.product)}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: _quickQuestions
+                    .map(
+                      (question) => ActionChip(
+                        label: Text(question),
+                        onPressed: () => _prefillMessage(question),
+                        backgroundColor: const Color(0xFFFFF0EC),
+                        labelStyle: const TextStyle(
+                          color: Color(0xFFEE4D2D),
+                          fontWeight: FontWeight.w600,
+                        ),
+                        side: BorderSide.none,
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Flexible(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 280),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: _messages.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final message = _messages[index];
+                    final isUser = message.sender == _ChatSender.user;
+                    return Align(
+                      alignment: isUser
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.72,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isUser
+                              ? const Color(0xFFEE4D2D)
+                              : const Color(0xFFF6F6F6),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Text(
+                          message.text,
+                          style: TextStyle(
+                            color: isUser ? Colors.white : Colors.black87,
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    focusNode: _messageFocusNode,
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: _sendMessage,
+                    decoration: InputDecoration(
+                      hintText: 'Nhập tin nhắn cho shop',
+                      filled: true,
+                      fillColor: const Color(0xFFF7F7F7),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                SizedBox(
+                  height: 48,
+                  width: 48,
+                  child: ElevatedButton(
+                    onPressed: () => _sendMessage(_messageController.text),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFEE4D2D),
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Icon(Icons.send_rounded, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+enum _ChatSender { shop, user }
+
+class _ChatMessage {
+  final _ChatSender sender;
+  final String text;
+
+  const _ChatMessage({required this.sender, required this.text});
 }
 
 class _SpecTable extends StatelessWidget {
