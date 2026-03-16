@@ -63,10 +63,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final topInset = MediaQuery.of(context).padding.top;
+    final refreshEdgeOffset = topInset + kToolbarHeight + 62;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       body: RefreshIndicator(
         color: _primaryColor,
+        edgeOffset: refreshEdgeOffset,
+        displacement: refreshEdgeOffset + 16,
         onRefresh: _onRefresh,
         child: CustomScrollView(
           controller: _scrollController,

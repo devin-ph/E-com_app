@@ -25,7 +25,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
 
-    expect(find.text('TH4 - Nhóm 1'), findsOneWidget);
+    expect(find.text('TH4 - Nhóm G3-C3'), findsOneWidget);
     expect(find.text('Danh mục sản phẩm'), findsOneWidget);
     expect(find.textContaining('Tìm kiếm sản phẩm'), findsOneWidget);
     expect(find.byIcon(Icons.shopping_cart_outlined), findsOneWidget);
@@ -41,23 +41,25 @@ class _TestProductProvider extends ProductProvider {
   final List<Product> _items = const [
     Product(
       id: 1,
-      title: 'Áo thun basic form rộng',
+      title: 'Oversized Basic T Shirt',
       price: 15.0,
-      description: 'Sản phẩm kiểm thử',
+      description: 'Test product',
       category: "men's clothing",
       image: 'https://example.com/product-1.png',
       rating: 4.8,
       ratingCount: 1200,
+      discountPercent: 18,
     ),
     Product(
       id: 2,
-      title: 'Tai nghe bluetooth chống ồn',
+      title: 'Noise Cancelling Bluetooth Headphones',
       price: 32.5,
-      description: 'Sản phẩm kiểm thử',
+      description: 'Test product',
       category: 'electronics',
       image: 'https://example.com/product-2.png',
       rating: 4.6,
       ratingCount: 850,
+      discountPercent: 27,
     ),
   ];
 
