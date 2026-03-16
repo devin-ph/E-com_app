@@ -217,22 +217,12 @@ class ProductCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Expanded(
-                        child: Text(
-                          Formatters.currency(product.originalPrice),
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 11,
-                            decoration: TextDecoration.lineThrough,
-                          ),
-                        ),
-                      ),
                       Text(
-                        Formatters.usd(product.price),
+                        Formatters.currency(product.originalPrice),
                         style: const TextStyle(
-                          color: Color(0xFF8A8A8A),
+                          color: Colors.grey,
                           fontSize: 11,
-                          fontWeight: FontWeight.w500,
+                          decoration: TextDecoration.lineThrough,
                         ),
                       ),
                     ],
