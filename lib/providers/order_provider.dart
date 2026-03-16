@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/order.dart';
 import '../models/cart_item.dart';
+import '../services/storage_service.dart';
 
 class OrderProvider extends ChangeNotifier {
   final List<Order> _orders = [];
@@ -9,6 +10,29 @@ class OrderProvider extends ChangeNotifier {
 
   List<Order> getByStatus(OrderStatus status) =>
       _orders.where((o) => o.status == status).toList();
+
+  Future<void> restoreOrders() async {
+    final stored = await StorageService.loadOrders();
+    if (stored.isEmpty) return;
+    final restored = stored
+        .map((raw) {
+          try {
+            return Order.fromJson(raw);
+          } catch (_) {
+            return null;
+          }
+        })
+        .whereType<Order>()
+        .toList();
+    if (restored.isEmpty) return;
+    _orders
+      ..clear()
+      ..addAll(restored);
+    notifyListeners();
+  }
+
+  Future<void> _saveToStorage() =>
+      StorageService.saveOrders(_orders.map((o) => o.toJson()).toList());
 
   void placeOrder({
     required List<CartItem> items,
@@ -28,6 +52,7 @@ class OrderProvider extends ChangeNotifier {
     );
     _orders.insert(0, order);
     notifyListeners();
+    _saveToStorage();
   }
 
   void cancelOrder(String orderId) {
@@ -43,5 +68,6 @@ class OrderProvider extends ChangeNotifier {
       createdAt: old.createdAt,
     );
     notifyListeners();
+    _saveToStorage();
   }
 }

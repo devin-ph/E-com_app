@@ -38,4 +38,26 @@ class Order {
       items.fold(0, (sum, item) => sum + item.subtotal);
 
   int get totalItems => items.fold(0, (sum, item) => sum + item.quantity);
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'items': items.map((e) => e.toJson()).toList(),
+        'address': address,
+        'paymentMethod': paymentMethod,
+        'status': status.index,
+        'createdAt': createdAt.toIso8601String(),
+      };
+
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      id: json['id'] as String,
+      items: (json['items'] as List)
+          .map((e) => CartItem.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      address: json['address'] as String,
+      paymentMethod: json['paymentMethod'] as String,
+      status: OrderStatus.values[(json['status'] as num?)?.toInt() ?? 0],
+      createdAt: DateTime.parse(json['createdAt'] as String),
+    );
+  }
 }
