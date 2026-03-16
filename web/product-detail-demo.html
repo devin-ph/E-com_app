@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo Hiển Thị Chi Tiết Sản Phẩm</title>
+    <link rel="stylesheet" href="product-detail-demo.css" />
+  </head>
+  <body>
+    <main class="page">
+      <aside class="product-list">
+        <h2>Danh sách sản phẩm</h2>
+        <div id="productList" class="list"></div>
+      </aside>
+
+      <section class="detail-panel">
+        <div class="image-wrap">
+          <img id="detailImage" alt="Ảnh sản phẩm" />
+        </div>
+
+        <div class="action-bar">
+          <button type="button" class="btn-add">Thêm vào giỏ hàng</button>
+          <button type="button" class="btn-buy">Mua ngay</button>
+        </div>
+
+        <article class="detail-content">
+          <h1 id="detailName"></h1>
+          <p id="detailPrice" class="price"></p>
+          <p id="detailCategory" class="category"></p>
+          <p id="detailDescription" class="description"></p>
+
+          <h3>Thông tin bổ sung</h3>
+          <ul id="detailSpecs" class="spec-list"></ul>
+        </article>
+      </section>
+    </main>
+
+    <script src="product-detail-demo.js"></script>
+  </body>
+</html>

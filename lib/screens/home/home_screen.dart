@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/product_provider.dart';
 import '../../widgets/cart_icon_button.dart';
@@ -139,9 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 preferredSize: const Size.fromHeight(62),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 220),
-                  color: _searchBarCollapsed
-                      ? _primaryColor
-                      : Colors.transparent,
+                  color: _searchBarCollapsed ? _primaryColor : Colors.transparent,
                   padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
@@ -220,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.fromLTRB(12, 18, 12, 10),
                 child: _SectionHeader(
                   title: 'Gợi ý hôm nay',
-                  subtitle: 'Vuốt để làm mới, cuộn để tải thêm sản phẩm',
+                  subtitle: 'Vượt khó làm mới, cuốn dắt tới thêm sản phẩm',
                   icon: Icons.local_fire_department_rounded,
                 ),
               ),

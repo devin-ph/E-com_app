@@ -19,6 +19,13 @@ class CartScreen extends StatelessWidget {
                 color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Đơn mua',
+            icon: const Icon(Icons.receipt_long_outlined),
+            onPressed: () => Navigator.pushNamed(context, '/orders'),
+          ),
+        ],
         backgroundColor: const Color(0xFFEE4D2D),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -188,7 +195,7 @@ class _CartItemTile extends StatelessWidget {
                       children: [
                         _Tag('Size: ${item.size}'),
                         const SizedBox(width: 4),
-                        _Tag(item.color),
+                        _Tag('Màu: ${item.color}'),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -344,7 +351,7 @@ class _CartBottomBar extends StatelessWidget {
                     onChanged: (value) =>
                         cart.toggleSelectAll(value ?? false),
                   ),
-                  const Text('Tất cả',
+                  const Text('Chọn tất cả',
                       style: TextStyle(fontSize: 13)),
                   const Spacer(),
                   // Total

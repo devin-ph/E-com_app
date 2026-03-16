@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../models/product.dart';
 import '../utils/formatters.dart';
+import '../utils/product_navigation_cache.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -50,7 +51,10 @@ class ProductCard extends StatelessWidget {
     final tags = _buildTags();
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        ProductNavigationCache.lastSelectedProduct = product;
+        onTap();
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -68,8 +72,10 @@ class ProductCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
+                  
                 top: Radius.circular(18),
-              ),
+              
+                ),
               child: Stack(
                 children: [
                   Hero(

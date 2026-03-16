@@ -1,3 +1,4 @@
 {
-  "cmake.sourceDirectory": "E:/PTUD/E-com_app/linux"
+  "cmake.sourceDirectory": "${workspaceFolder}/linux",
+  "dart.flutterSdkPath": "C:/Users/Acer/fvm/versions/stable"
 }

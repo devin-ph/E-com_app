@@ -11,10 +11,12 @@ class Formatters {
     decimalDigits: 2,
   );
 
+  /// Convert FakeStore API prices to VND for display in the app.
   static String currency(double price) {
     return _vndFormat.format(price * 25000);
   }
 
+  /// Alias kept for compatibility with existing code paths.
   static String vnd(double price) {
     return _vndFormat.format(price * 25000);
   }

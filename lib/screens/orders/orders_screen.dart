@@ -101,6 +101,36 @@ class _OrderCard extends StatelessWidget {
 
   const _OrderCard({required this.order});
 
+  Future<void> _confirmCancelOrder(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: const Text('Hủy đơn hàng'),
+            content: const Text(
+              'Bạn có chắc muốn hủy đơn hàng này không?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: const Text('Không'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: const Text(
+                  'Hủy đơn',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!context.mounted || !confirmed) return;
+
+    context.read<OrderProvider>().cancelOrder(order.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -225,11 +255,7 @@ class _OrderCard extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () {
-                    context
-                        .read<OrderProvider>()
-                        .cancelOrder(order.id);
-                  },
+                  onPressed: () => _confirmCancelOrder(context),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.red,
                     side: const BorderSide(color: Colors.red),
