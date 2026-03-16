@@ -1,6 +1,6 @@
 # TH4 - G3C3 — E-Commerce App
 
-Ứng dụng bán hàng xây dựng bằng Flutter
+Ứng dụng sàn thương mại điện tử xây dựng bằng Flutter
 
 ---
 
@@ -10,18 +10,18 @@
 lib/
 ├── main.dart                      ← Cấu hình app, injection Provider, routes
 │
-├── models/                        ← Data models (không ai chỉnh sửa tùy tiện)
+├── models/                        ← Data models
 │   ├── product.dart
 │   ├── cart_item.dart
 │   ├── order.dart
 │   └── category.dart
 │
-├── providers/                     ← State Management (không ai chỉnh sửa tùy tiện)
+├── providers/                     ← State Management
 │   ├── cart_provider.dart
 │   ├── product_provider.dart
 │   └── order_provider.dart
 │
-├── services/                      ← API & Storage (không ai chỉnh sửa tùy tiện)
+├── services/                      ← API & Storage
 │   ├── api_service.dart
 │   └── storage_service.dart
 │
@@ -34,44 +34,38 @@ lib/
 │   └── formatters.dart
 │
 └── screens/
-    ├── home/                      ← THÀNH VIÊN 1 phụ trách
+    ├── home/                      ← LÊ TIẾN MINH
     │   ├── home_screen.dart
     │   └── widgets/
     │       ├── banner_carousel.dart
     │       ├── category_row.dart
     │       └── product_grid.dart
     │
-    ├── product_detail/            ← THÀNH VIÊN 2 phụ trách
+    ├── product_detail/            ← ĐINH PHƯƠNG LY
     │   ├── product_detail_screen.dart
     │   └── widgets/
     │       └── add_to_cart_bottom_sheet.dart
     │
-    ├── cart/                      ← THÀNH VIÊN 3 phụ trách
+    ├── cart/                      ← TRẦN QUANG QUÂN
     │   └── cart_screen.dart
     │
-    ├── checkout/                  ← THÀNH VIÊN 4 phụ trách
+    ├── checkout/                  ← PHẠM NGỌC MINH NAM
     │   └── checkout_screen.dart
     │
-    └── orders/                    ← THÀNH VIÊN 4 phụ trách
+    └── orders/                    ← PHẠM NGỌC MINH NAM
         └── orders_screen.dart
 ```
 
 ---
 
-## Quy tắc làm việc nhóm 
+## Phân công nhiệm vụ
 
 | Thành viên | Phụ trách                          | File được chỉnh                        |
 |---|---|---|
-| Thành viên 1 | Home Screen                    | `screens/home/**`                      |
-| Thành viên 2 | Product Detail Screen          | `screens/product_detail/**`            |
-| Thành viên 3 | Cart Screen                    | `screens/cart/**`                      |
-| Thành viên 4 | Checkout + Orders Screen       | `screens/checkout/**`, `screens/orders/**` |
-
-- **Chỉ sửa file trong thư mục được phân công.** Không được sửa `models/`, `providers/`, `services/` mà không thảo luận với cả nhóm.
-- Nếu cần thêm widget **dùng chung**, tạo pull request riêng và tag toàn nhóm review.
-- `main.dart` chỉ được sửa khi thêm route mới — cần merge request rõ ràng.
-
----
+| Lê Tiến Minh | Home Screen                    | `screens/home/**`                      |
+| Đinh Phương Ly | Product Detail Screen          | `screens/product_detail/**`            |
+| Trần Quang Quân | Cart Screen                    | `screens/cart/**`                      |
+| Phạm Ngọc Minh Nam | Checkout + Orders Screen       | `screens/checkout/**`, `screens/orders/**` |
 
 ## Tính năng
 
@@ -83,17 +77,11 @@ lib/
 | **Thanh toán** | Form địa chỉ, Chọn phương thức (COD/MoMo/Banking), Xác nhận đặt hàng, Dialog thành công |
 | **Đơn mua** | TabBar 4 trạng thái (Chờ xác nhận/Đang giao/Đã giao/Đã hủy), Danh sách đơn hàng |
 
-## State Management
-
-- **Provider** pattern
-- `CartProvider`: Quản lý toàn bộ giỏ hàng, persist xuống `SharedPreferences`
-- `ProductProvider`: Fetch + pagination sản phẩm từ FakeStore API
-- `OrderProvider`: Lưu lịch sử đơn hàng (local)
-
 ## Chạy dự án
 
 ```bash
 git clone https://github.com/devin-ph/E-com_app.git
+cd E-com_app
 flutter pub get
 flutter run
 ```
