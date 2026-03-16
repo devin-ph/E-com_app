@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../models/product.dart';
 import '../../../utils/formatters.dart';
 import '../../../utils/product_localization.dart';
+import '../../../widgets/cart_icon_button.dart';
 import 'widgets/add_to_cart_bottom_sheet.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -205,6 +206,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           'Chi tiết sản phẩm',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
+        actions: const [CartIconButton(iconColor: Colors.black87)],
       ),
       body: SingleChildScrollView(
         child: Column(
