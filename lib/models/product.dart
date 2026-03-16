@@ -7,6 +7,7 @@ class Product {
   final String image;
   final double rating;
   final int ratingCount;
+  final int discountPercent;
 
   const Product({
     required this.id,
@@ -17,18 +18,25 @@ class Product {
     required this.image,
     required this.rating,
     required this.ratingCount,
+    required this.discountPercent,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
+    final rawDiscount = (json['discountPercentage'] as num?)?.round() ?? 10;
+    final discountPercent = rawDiscount.clamp(10, 35);
+
     return Product(
       id: json['id'] as int,
       title: json['title'] as String,
       price: (json['price'] as num).toDouble(),
       description: json['description'] as String,
       category: json['category'] as String,
-      image: json['image'] as String,
-      rating: (json['rating']['rate'] as num).toDouble(),
-      ratingCount: json['rating']['count'] as int,
+      image:
+          (json['thumbnail'] ?? (json['images'] as List<dynamic>).first)
+              as String,
+      rating: (json['rating'] as num).toDouble(),
+      ratingCount: (json['stock'] as num?)?.toInt() ?? 0,
+      discountPercent: discountPercent,
     );
   }
 
@@ -43,13 +51,9 @@ class Product {
     return 'Đã bán $ratingCount';
   }
 
-  // Fake original price (10-30% higher)
-  double get originalPrice => price * 1.2;
+  double get originalPrice => price / (1 - (discountPercent / 100));
 
-  // Fake discount tag
-  String get discountTag =>
-      '-${((1 - price / originalPrice) * 100).toStringAsFixed(0)}%';
+  String get discountTag => '-$discountPercent%';
 
-  // Extra images (same image but faking multiple angles for demo)
   List<String> get images => [image, image, image];
 }

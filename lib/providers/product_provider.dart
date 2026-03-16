@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
+import '../models/category.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
 
 class ProductProvider extends ChangeNotifier {
   final ApiService _api = ApiService();
-  static const Set<String> _apiCategories = {
-    "men's clothing",
-    "women's clothing",
-    'electronics',
-    'jewelery',
-  };
+  static const Set<String> _apiCategories = {...kDummyJsonCategorySlugs};
 
   List<Product> _products = [];
   bool _isLoading = false;
@@ -40,11 +36,6 @@ class ProductProvider extends ChangeNotifier {
   Future<void> loadProducts({bool refresh = false}) async {
     if (_isLoading) return;
     final selected = _selectedCategory;
-    final isLocalOnlyCategory = selected.startsWith('local_');
-
-    if (isLocalOnlyCategory && !refresh) {
-      return;
-    }
 
     if (refresh) {
       _currentPage = 1;
@@ -58,31 +49,24 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      if (isLocalOnlyCategory) {
-        final allProducts = await _api.fetchProducts(
-          category: null,
-          limit: 100,
-          page: 1,
-        );
-        _products = _applyLocalCategoryFilter(allProducts, selected);
+      final apiCategory = _apiCategories.contains(selected) ? selected : null;
+      final fetchedProducts = await _api.fetchProducts(
+        category: apiCategory,
+        limit: _pageSize,
+        page: _currentPage,
+      );
+
+      if (fetchedProducts.length < _pageSize) {
         _hasMore = false;
-      } else {
-        final apiCategory = _apiCategories.contains(selected) ? selected : null;
-        final newProducts = await _api.fetchProducts(
-          category: apiCategory,
-          limit: _pageSize,
-          page: _currentPage,
-        );
-        if (newProducts.length < _pageSize) {
-          _hasMore = false;
-        }
-        if (refresh) {
-          _products = newProducts;
-        } else {
-          _products = [..._products, ...newProducts];
-        }
-        _currentPage++;
       }
+
+      if (_currentPage == 1) {
+        _products = fetchedProducts;
+      } else {
+        _products = [..._products, ...fetchedProducts];
+      }
+
+      _currentPage++;
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -101,27 +85,5 @@ class ProductProvider extends ChangeNotifier {
     if (_searchQuery == query) return;
     _searchQuery = query;
     notifyListeners();
-  }
-
-  List<Product> _applyLocalCategoryFilter(
-    List<Product> products,
-    String category,
-  ) {
-    final keywordMap = <String, List<String>>{
-      'local_cosmetics': ['cream', 'beauty', 'makeup', 'skin', 'cosmetic'],
-      'local_home': ['home', 'kitchen', 'furniture', 'decor', 'lamp'],
-      'local_sport': ['sport', 'fitness', 'gym', 'running', 'outdoor'],
-    };
-
-    final keywords = keywordMap[category];
-    if (keywords == null || keywords.isEmpty) {
-      return products;
-    }
-
-    return products.where((product) {
-      final text = '${product.title} ${product.description} ${product.category}'
-          .toLowerCase();
-      return keywords.any(text.contains);
-    }).toList();
   }
 }
