@@ -11,20 +11,33 @@ import 'screens/orders/orders_screen.dart';
 import 'models/product.dart';
 import 'utils/product_navigation_cache.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final cartProvider = CartProvider();
+  final orderProvider = OrderProvider();
+  await Future.wait([
+    cartProvider.restoreCart(),
+    orderProvider.restoreOrders(),
+  ]);
+  runApp(MyApp(cartProvider: cartProvider, orderProvider: orderProvider));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final CartProvider cartProvider;
+  final OrderProvider orderProvider;
+  const MyApp({
+    super.key,
+    required this.cartProvider,
+    required this.orderProvider,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider.value(value: cartProvider),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
-        ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider.value(value: orderProvider),
       ],
       child: MaterialApp(
         title: 'TH4 - G3C3',

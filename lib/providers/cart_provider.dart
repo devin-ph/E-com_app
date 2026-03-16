@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/cart_item.dart';
 import '../models/product.dart';
+import '../services/api_service.dart';
 import '../services/storage_service.dart';
 
 class CartProvider extends ChangeNotifier {
+  final ApiService _api = ApiService();
   final List<CartItem> _items = [];
 
   List<CartItem> get items => List.unmodifiable(_items);
@@ -100,7 +102,7 @@ class CartProvider extends ChangeNotifier {
     await StorageService.saveCartKeys(
       _items
           .map((e) => {
-                'product_id': e.product.id,
+                'product': e.product.toJson(),
                 'size': e.size,
                 'color': e.color,
                 'quantity': e.quantity,
@@ -111,10 +113,42 @@ class CartProvider extends ChangeNotifier {
   }
 
   Future<void> _loadFromStorage() async {
-    // Cart restore from SharedPreferences is handled by StorageService
-    // Products need to be fetched from API; we skip auto-restore for now
-    // to avoid circular dependency. The StorageService stores raw JSON,
-    // and full restore would require the ApiService. 
-    // This is acceptable — cart restores after user logs in or makes actions.
+    final stored = await StorageService.loadCartKeys();
+    if (stored.isEmpty) return;
+
+    final restored = <CartItem>[];
+    for (final raw in stored) {
+      try {
+        final Product product;
+        final productData = raw['product'];
+        if (productData is Map) {
+          product = Product.fromJson(Map<String, dynamic>.from(productData));
+        } else {
+          // legacy: only product_id saved — fetch from API as fallback
+          final id = (raw['product_id'] as num?)?.toInt();
+          if (id == null) continue;
+          product = await _api.fetchProductById(id);
+        }
+        restored.add(CartItem(
+          product: product,
+          size: (raw['size'] as String?) ?? '',
+          color: (raw['color'] as String?) ?? '',
+          quantity: (raw['quantity'] as num?)?.toInt() ?? 1,
+          isChecked: raw['is_checked'] as bool? ?? true,
+        ));
+      } catch (_) {
+        // skip corrupted entries
+        continue;
+      }
+    }
+
+    if (restored.isEmpty) return;
+    _items
+      ..clear()
+      ..addAll(restored);
+    notifyListeners();
   }
+
+  /// Call once at app start (awaited in main) so cart is ready before first frame.
+  Future<void> restoreCart() => _loadFromStorage();
 }

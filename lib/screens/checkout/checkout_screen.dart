@@ -5,6 +5,7 @@ import '../../providers/cart_provider.dart';
 import '../../providers/order_provider.dart';
 import '../../utils/formatters.dart';
 import '../../utils/product_localization.dart';
+import '../../utils/product_variant_labels.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -149,7 +150,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   style: const TextStyle(fontSize: 13),
                                 ),
                                 Text(
-                                  'Cỡ: ${item.size} · ${item.color} · x${item.quantity}',
+                                  [
+                                    if (sizeLabel(item) != null) sizeLabel(item)!,
+                                    if (colorLabel(item) != null) colorLabel(item)!,
+                                    'x${item.quantity}',
+                                  ].join(' · '),
                                   style: const TextStyle(
                                     fontSize: 11,
                                     color: Colors.grey,

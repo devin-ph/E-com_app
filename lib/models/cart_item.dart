@@ -36,10 +36,21 @@ class CartItem {
   String get key => '${product.id}_${size}_$color';
 
   Map<String, dynamic> toJson() => {
-        'product_id': product.id,
+        'product': product.toJson(),
         'size': size,
         'color': color,
         'quantity': quantity,
         'is_checked': isChecked,
       };
+
+  factory CartItem.fromJson(Map<String, dynamic> json) {
+    return CartItem(
+      product: Product.fromJson(
+          Map<String, dynamic>.from(json['product'] as Map)),
+      size: (json['size'] as String?) ?? '',
+      color: (json['color'] as String?) ?? '',
+      quantity: (json['quantity'] as num?)?.toInt() ?? 1,
+      isChecked: json['is_checked'] as bool? ?? true,
+    );
+  }
 }

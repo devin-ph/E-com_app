@@ -5,6 +5,7 @@ import '../../providers/cart_provider.dart';
 import '../../models/cart_item.dart';
 import '../../utils/formatters.dart';
 import '../../utils/product_localization.dart';
+import '../../utils/product_variant_labels.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -208,9 +209,11 @@ class _CartItemTile extends StatelessWidget {
                     // Variation tags
                     Row(
                       children: [
-                        _Tag('Kích cỡ: ${item.size}'),
-                        const SizedBox(width: 4),
-                        _Tag('Màu: ${item.color}'),
+                        if (sizeLabel(item) != null) ...[
+                          _Tag(sizeLabel(item)!),
+                          const SizedBox(width: 4),
+                        ],
+                        if (colorLabel(item) != null) _Tag(colorLabel(item)!),
                       ],
                     ),
                     const SizedBox(height: 8),

@@ -56,4 +56,16 @@ class Product {
   String get discountTag => '-$discountPercent%';
 
   List<String> get images => [image, image, image];
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'price': price,
+        'description': description,
+        'category': category,
+        'thumbnail': image,
+        'rating': rating,
+        'stock': ratingCount,
+        'discountPercentage': discountPercent,
+      };
 }
