@@ -76,7 +76,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     controller: _addressController,
                     label: 'Địa chỉ chi tiết',
                     icon: Icons.home_outlined,
-                    maxLines: 2,
+                    maxLines: 1,
                     validator: (v) => v == null || v.isEmpty
                         ? 'Vui lòng nhập địa chỉ'
                         : null,

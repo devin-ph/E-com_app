@@ -1,3 +1,4 @@
+import 'package:e_com_app/models/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../models/product.dart';
@@ -7,17 +8,17 @@ import '../../../utils/formatters.dart';
 const List<String> _defaultSizes = ['S', 'M', 'L', 'XL', 'XXL'];
 const List<String> _electronicsCapacities = ['128Gb', '256Gb', '512Gb', '1Tb'];
 const List<Map<String, dynamic>> _defaultColors = [
-  {'label': 'Đen', 'value': 'black', 'color': Colors.black},
-  {'label': 'Trắng', 'value': 'white', 'color': Colors.white},
-  {'label': 'Đỏ', 'value': 'red', 'color': Colors.red},
-  {'label': 'Xanh', 'value': 'blue', 'color': Colors.blue},
-  {'label': 'Vàng', 'value': 'yellow', 'color': Colors.amber},
+  {'label': 'Đen', 'value': 'Đen', 'color': Colors.black},
+  {'label': 'Trắng', 'value': 'Trắng', 'color': Colors.white},
+  {'label': 'Đỏ', 'value': 'Đỏ', 'color': Colors.red},
+  {'label': 'Xanh', 'value': 'Xanh', 'color': Colors.blue},
+  {'label': 'Vàng', 'value': 'Vàng', 'color': Colors.amber},
 ];
 
 const List<String> _jewelrySizes = ['13', '14', '15', '16', '17'];
 const List<Map<String, dynamic>> _jewelryColors = [
-  {'label': 'Bạc', 'value': 'silver', 'color': Color(0xFFC0C0C0)},
-  {'label': 'Vàng kim', 'value': 'gold', 'color': Color(0xFFD4AF37)},
+  {'label': 'Bạc', 'value': 'Bạc', 'color': Color(0xFFC0C0C0)},
+  {'label': 'Vàng kim', 'value': 'Vàng kim', 'color': Color(0xFFD4AF37)},
 ];
 
 const Map<int, String> _productTitlesVi = {
@@ -364,24 +365,69 @@ class _AddToCartBottomSheetState extends State<AddToCartBottomSheet> {
           )
         : widget.product;
 
-    context.read<CartProvider>().addItem(
+    final cartItem = CartItem(
       product: productForCart,
       size: _selectedSize,
       color: _selectedColor,
       quantity: _quantity,
     );
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('✓ Đã thêm vào giỏ hàng thành công!'),
-        backgroundColor: Color(0xFF2E7D32),
-        duration: Duration(seconds: 2),
-      ),
-    );
+
     if (widget.buyNow) {
-      Navigator.pushNamed(context, '/cart');
+      // Đóng bottom sheet
+      Navigator.pop(context);
+      // Chuyển tới CheckoutScreen và truyền sản phẩm
+      Navigator.pushNamed(context, '/checkout', arguments: [cartItem]);
+    } else {
+      // Thêm vào giỏ hàng
+      context.read<CartProvider>().addItem(
+        product: productForCart,
+        size: _selectedSize,
+        color: _selectedColor,
+        quantity: _quantity,
+      );
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('✓ Đã thêm vào giỏ hàng thành công!'),
+          backgroundColor: Color(0xFF2E7D32),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
+
+  // void _confirm() {
+  //   final productForCart = _isElectronics
+  //       ? Product(
+  //           id: widget.product.id,
+  //           title: widget.product.title,
+  //           price: _effectivePrice,
+  //           description: widget.product.description,
+  //           category: widget.product.category,
+  //           image: widget.product.image,
+  //           rating: widget.product.rating,
+  //           ratingCount: widget.product.ratingCount,
+  //         )
+  //       : widget.product;
+
+  //   context.read<CartProvider>().addItem(
+  //     product: productForCart,
+  //     size: _selectedSize,
+  //     color: _selectedColor,
+  //     quantity: _quantity,
+  //   );
+  //   Navigator.pop(context);
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     const SnackBar(
+  //       content: Text('✓ Đã thêm vào giỏ hàng thành công!'),
+  //       backgroundColor: Color(0xFF2E7D32),
+  //       duration: Duration(seconds: 2),
+  //     ),
+  //   );
+  //   if (widget.buyNow) {
+  //     Navigator.pushNamed(context, '/cart');
+  //   }
+  // }
 }
 
 class _QuantityButton extends StatelessWidget {
